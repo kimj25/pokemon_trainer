@@ -22,7 +22,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/pokemon" element={<Pokemon backendURL={backendURL} />} />
-                <Route path="/pokedex" element={<PokeDex backendURL={backendURL} />} />
+                <Route path="/species" element={<PokeDex backendURL={backendURL} />} />
                 <Route path="/types" element={<Types backendURL={backendURL} />} />
             </Routes>
         </>
