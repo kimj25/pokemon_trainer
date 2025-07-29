@@ -100,22 +100,22 @@ Values
     ('Beedrill', 1, 12);
 -- all types 
 Insert Into Types (typeName) 
-Values
-    ('Bug'),	  -- 1
-    ('Dragon'),	  -- 2
-    ('Electric'), -- 3
-    ('Fighting'), -- 4
-    ('Fire'),	  -- 5
-    ('Flying'),	  -- 6
-    ('Ghost'),	  -- 7
-    ('Grass'),	  -- 8
-    ('Ground'),	  -- 9
-    ('Ice'),	  --10
-    ('Normal'),	  --11
-    ('Poison'),	  --12
-    ('Psychic'),  --13
-    ('Rock'),	  --14
-    ('Water');	  --15
+VALUES
+    ('Bug'),      --  1
+    ('Dragon'),   --  2
+    ('Electric'), --  3
+    ('Fighting'), --  4
+    ('Fire'),     --  5
+    ('Flying'),   --  6
+    ('Ghost'),    --  7
+    ('Grass'),    --  8
+    ('Ground'),   --  9
+    ('Ice'),      -- 10
+    ('Normal'),   -- 11
+    ('Poison'),   -- 12
+    ('Psychic'),  -- 13
+    ('Rock'),     -- 14
+    ('Water');    -- 15
     
 -- all badges 
 Insert Into Badges (badgeName, gymLocation) 
