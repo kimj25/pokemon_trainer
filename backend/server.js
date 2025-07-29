@@ -14,32 +14,70 @@ app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json()); // this is needed for post requests
 
 
-const PORT = YOUR_BACKEND_PORT;
+const PORT = 35729;
 
 // ########################################
 // ########## ROUTE HANDLERS
 
 // READ ROUTES
-app.get('/bsg-people', async (req, res) => {
+app.get('/pokemon', async (req, res) => {
     try {
-        // Create and execute our queries
-        // In query1, we use a JOIN clause to display the names of the homeworlds
-        const query1 = `SELECT bsg_people.id, bsg_people.fname, bsg_people.lname, \
-            bsg_planets.name AS 'homeworld', bsg_people.age FROM bsg_people \
-            LEFT JOIN bsg_planets ON bsg_people.homeworld = bsg_planets.id;`;
-        const query2 = 'SELECT * FROM bsg_planets;';
-        const [people] = await db.query(query1);
-        const [homeworlds] = await db.query(query2);
-    
-        res.status(200).json({ people, homeworlds });  // Send the results to the frontend
-
+        // Call stored procedure to get Pokémon data
+        const [pokemons] = await db.query('CALL GetAllPokemons()');
+        res.status(200).json({ pokemons: pokemons[0] });
     } catch (error) {
-        console.error("Error executing queries:", error);
-        // Send a generic error message to the browser
-        res.status(500).send("An error occurred while executing the database queries.");
+        console.error("Error executing Pokémon query:", error);
+        res.status(500).send("An error occurred while retrieving Pokémon.");
     }
-    
 });
+
+app.get('/types', async (req, res) => {
+    try {
+        // Call stored procedure to get Types data
+        const [types] = await db.query('CALL GetAllTypes()');
+        res.status(200).json({ types: types[0] });
+    } catch (error) {
+        console.error("Error executing Types query:", error);
+        res.status(500).send("An error occurred while retrieving Types.");
+    }
+});
+
+app.get('/species', async (req, res) => {
+    try {
+        const { type = null, page = 1, limit = 10 } = req.query;
+
+        const [rows] = await db.query(
+            `CALL GetSpeciesByTypeWithPagination(?, ?, ?)`,
+            [type, parseInt(page), parseInt(limit)]
+        );
+
+        res.status(200).json({ species: rows[0] }); // Stored procedures return an array of result sets
+    } catch (error) {
+        console.error("Error calling stored procedure:", error);
+        res.status(500).send("An error occurred while retrieving Species.");
+    }
+});
+
+app.delete('/pokemons/:pokemonID', async (req, res) => {
+    const { pokemonID } = req.params;
+
+    if (!pokemonID) {
+        return res.status(400).json({ error: "pokemonID parameter is required" });
+    }
+
+    try {
+        // Call the stored procedure to delete the Pokémon by ID
+        await db.query('CALL DeletePokemonById(?)', [pokemonID]);
+
+        res.status(200).json({ message: `Pokemon with ID ${pokemonID} deleted successfully.` });
+    } catch (error) {
+        console.error("Error deleting Pokemon:", error);
+        res.status(500).json({ error: "An error occurred while deleting the Pokemon." });
+    }
+});
+
+
+
 
 // ########################################
 // ########## LISTENER
