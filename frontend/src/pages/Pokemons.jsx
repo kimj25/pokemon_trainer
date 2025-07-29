@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TableRowWithDelete from '../components/TableRowWithDelete';
 import DeletePokemonForm from '../components/DeletePokemonForm';
+import CreatePokemonForm from '../components/CreatePokemonForm';
 
 function Pokemon({ backendURL }) {
     const [pokemons, setPokemons] = useState([]);
@@ -80,6 +81,8 @@ function Pokemon({ backendURL }) {
                     ))}
                 </tbody>
             </table>
+
+            <CreatePokemonForm backendURL={backendURL} refreshData={getData} />
         </>
     );
 }

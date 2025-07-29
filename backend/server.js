@@ -76,6 +76,39 @@ app.delete('/pokemons/:pokemonID', async (req, res) => {
     }
 });
 
+app.post('/pokemons', async (req, res) => {
+    const { speciesName, nickname, level, trainerID, dateCaught } = req.body;
+
+    if (!speciesName || !trainerID || !dateCaught || !level || level < 1 || level > 100) {
+        return res.status(400).json({ error: 'Invalid input data' });
+    }
+
+    try {
+        // 1. Lookup species ID by name
+        const [rows] = await db.execute('SELECT pokemonSpeciesID FROM PokemonSpecies WHERE speciesName = ?', [speciesName.trim()]);
+
+        if (rows.length === 0) {
+            return res.status(400).json({ error: 'Species name not found' });
+        }
+
+        const pokemonSpeciesID = rows[0].pokemonSpeciesID;
+
+        // 2. Call insert procedure with the found ID
+        await db.execute('CALL InsertPokemon(?, ?, ?, ?, ?)', [
+            pokemonSpeciesID,
+            nickname || null,
+            level,
+            trainerID,
+            dateCaught
+        ]);
+
+        res.status(201).json({ message: 'Pokémon created successfully' });
+    } catch (err) {
+        console.error('Error creating Pokémon:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 

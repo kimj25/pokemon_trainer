@@ -7,6 +7,7 @@ Drop Procedure If Exists GetAllTypes //
 Drop Procedure If Exists GetAllSpecies //
 Drop Procedure If Exists GetSpeciesByTypeWithPagination //
 Drop Procedure If Exists DeletePokemonById //
+Drop Procedure If Exists InsertPokemon //
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()
@@ -78,6 +79,18 @@ End //
 Create procedure DeletePokemonById(In inputPokemonID Int)
 Begin
     Delete from Pokemons where pokemonID = inputPokemonID;
+End //
+
+Create Procedure InsertPokemon (
+    In in_pokemonSpeciesID Int,
+    In in_nickname Varchar(255),
+    In in_level Int,
+    In in_trainerID Int,
+    In in_dateCaught Date
+)
+Begin
+    Insert Into Pokemons (pokemonSpeciesID, nickname, level, trainerID, dateCaught)
+    Values (in_pokemonSpeciesID, in_nickname, in_level, in_trainerID, in_dateCaught);
 End //
 
 Delimiter ;
