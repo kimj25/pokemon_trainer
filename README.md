@@ -1,2 +1,2 @@
 # pokemon_trainer
-okemon trainer database project
+Pokemon trainer database project
