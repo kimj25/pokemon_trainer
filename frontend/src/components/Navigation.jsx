@@ -8,6 +8,9 @@ function Navigation() {
             <Link to="/pokemon">Pokemon</Link>
             <Link to="/pokedex">PokeDex</Link>
             <Link to="/types">Types</Link>
+            <Link to="/trainers">Trainers</Link>
+            <Link to="/badges">Badges</Link>
+            <Link to="/trainerbadges">Trainer Badges</Link> 
         </nav>
     );
 }

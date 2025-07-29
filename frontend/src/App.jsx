@@ -6,6 +6,9 @@ import Home from './pages/Home';
 import PokeDex from './pages/PokeDex';
 import Pokemon from './pages/Pokemons';
 import Types from './pages/Types';
+import Trainers from './pages/Trainers';
+import Badges from './pages/Badges';
+import TrainerBadges from './pages/TrainerBadges';
 
 // Components
 import Navigation from './components/Navigation';
@@ -24,6 +27,9 @@ function App() {
                 <Route path="/pokemon" element={<Pokemon backendURL={backendURL} />} />
                 <Route path="/pokedex" element={<PokeDex backendURL={backendURL} />} />
                 <Route path="/types" element={<Types backendURL={backendURL} />} />
+                <Route path="/trainers" element={<Trainers backendURL={backendURL} />} />
+                <Route path="/badges" element={<Badges backendURL={backendURL} />} />
+                <Route path="/trainerbadges" element={<TrainerBadges backendURL={backendURL} />} />
             </Routes>
         </>
     );
