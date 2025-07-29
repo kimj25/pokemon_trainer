@@ -4,14 +4,15 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-      "development": "nodemon server.js",
-      "production": "npx forever start server.js",
-      "stop_production": "npx forever stop server.js"
+    "development": "nodemon server.js",
+    "production": "npx forever start server.js",
+    "stop_production": "npx forever stop server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "forever": "^4.0.3",
     "mysql2": "^3.14.2",
