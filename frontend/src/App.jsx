@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import PokeDex from './pages/PokeDex';
 import Pokemon from './pages/Pokemons';
 import Types from './pages/Types';
+import UpdatePokemonForm from './components/UpdatePokemonForm';
 
 // Components
 import Navigation from './components/Navigation';
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/pokemon" element={<Pokemon backendURL={backendURL} />} />
                 <Route path="/species" element={<PokeDex backendURL={backendURL} />} />
                 <Route path="/types" element={<Types backendURL={backendURL} />} />
+                <Route path="/pokemon/:id" element={<UpdatePokemonForm backendURL={backendURL} />} />
             </Routes>
         </>
     );

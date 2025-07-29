@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
-// Citation: Had chatgpt generate this code for creating a new Pokémon
-// The prompt was to refactor the code to be a form that allows users to create a new Pokémon
-// with fields for species name, nickname, level, trainer ID, and date caught.
+// Citation: Had chatgpt help generate this code for creating a new Pokémon
+// The prompt: Given the following code and with fields for species name, nickname, level, trainer ID, and date caught.
+// create a form that allows users to create a new Pokémon. Make sure to validate the inputs. The level should be between 1 and 100. and the date should be in the format YYYY-MM-DD.
+// It was great help for the formatting the date and ensuring the level is within the range of 1-100.
+// The form should validate the inputs and provide feedback if any required fields are missing or invalid.
 const CreatePokemonForm = ({ backendURL, refreshData }) => {
     const [speciesName, setSpeciesName] = useState('');
     const [nickname, setNickname] = useState('');
