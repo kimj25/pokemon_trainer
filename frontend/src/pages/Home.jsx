@@ -1,10 +1,12 @@
 function Home() {
     return (
         <>
-            <h1>Home page</h1>
+            <h1>Kanto Trainer Database Home Page</h1>
             <div className="homepageDescription">
-                <p>Developer information and Project overview here.</p>
+                <p>By: Julie Kim and Francis Truong.</p>
             </div>
         </>
     )
-} export default Home;
+} 
+
+export default Home;

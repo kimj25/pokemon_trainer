@@ -1,9 +1,15 @@
+import { Link } from 'react-router-dom';
+
 function Navigation() {
     return (
         <nav>
             Navigation:
-            <a href="/">Home</a>
-            <a href="/bsg-people">BSG People</a>
+            <Link to="/">Home</Link>
+            <Link to="/pokemon">Pokemon</Link>
+            <Link to="/pokedex">PokeDex</Link>
+            <Link to="/types">Types</Link>
         </nav>
-    )
-} export default Navigation;
+    );
+}
+
+export default Navigation;
