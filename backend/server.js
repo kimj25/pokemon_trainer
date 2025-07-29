@@ -76,6 +76,111 @@ app.delete('/pokemons/:pokemonID', async (req, res) => {
     }
 });
 
+// Citation: Had chatgpt generate this code for creating a new Pokémon
+// Prompt: Create post request based on front end and dml provided
+// with fields for species name, nickname, level, trainer ID, and date caught based on the front end
+app.post('/pokemons', async (req, res) => {
+    const { speciesName, nickname, level, trainerID, dateCaught } = req.body;
+
+    if (!speciesName || !trainerID || !dateCaught || !level || level < 1 || level > 100) {
+        return res.status(400).json({ error: 'Invalid input data' });
+    }
+
+    try {
+        // 1. Lookup species ID by name
+        const [rows] = await db.execute('SELECT pokemonSpeciesID FROM PokemonSpecies WHERE speciesName = ?', [speciesName.trim()]);
+
+        if (rows.length === 0) {
+            return res.status(400).json({ error: 'Species name not found' });
+        }
+
+        const pokemonSpeciesID = rows[0].pokemonSpeciesID;
+
+        // 2. Call insert procedure with the found ID
+        await db.execute('CALL InsertPokemon(?, ?, ?, ?, ?)', [
+            pokemonSpeciesID,
+            nickname || null,
+            level,
+            trainerID,
+            dateCaught
+        ]);
+
+        res.status(201).json({ message: 'Pokémon created successfully' });
+    } catch (err) {
+        console.error('Error creating Pokémon:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Citation: Had chatgpt generate this code for creating a updating Pokémon
+// Prompt: given the post route, create one for updating pokemon
+// Then more manual edits
+app.put('/pokemons/:pokemonID', async (req, res) => {
+    const { pokemonID } = req.params;
+    const { speciesName, nickname, level, trainerID, dateCaught } = req.body;
+
+    if (!speciesName || !trainerID || !dateCaught || !level || level < 1 || level > 100) {
+        return res.status(400).json({ error: 'Invalid input data' });
+    }
+
+    try {
+        // Lookup pokemonSpeciesID by speciesName
+        const [rows] = await db.execute('SELECT pokemonSpeciesID FROM PokemonSpecies WHERE speciesName = ?', [speciesName.trim()]);
+
+        if (rows.length === 0) {
+            return res.status(400).json({ error: 'Species name not found' });
+        }
+
+        const pokemonSpeciesID = rows[0].pokemonSpeciesID;
+
+        // Call the update stored procedure
+        await db.execute('CALL UpdatePokemon(?, ?, ?, ?, ?, ?)', [
+            pokemonID,
+            pokemonSpeciesID,
+            nickname || null,
+            level,
+            trainerID,
+            dateCaught
+        ]);
+
+        res.status(200).json({ message: `Pokémon with ID ${pokemonID} updated successfully.` });
+    } catch (error) {
+        console.error('Error updating Pokémon:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Made a get route with the help of Copilot to get the current info to display on the edit component 
+app.get('/pokemon/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const [rows] = await db.query(
+            `
+            Select 
+                Pokemons.pokemonID,
+                PokemonSpecies.speciesName,
+                Pokemons.nickname,
+                Pokemons.level,
+                Pokemons.trainerID,
+                Pokemons.dateCaught
+            From Pokemons
+            Join PokemonSpecies On Pokemons.pokemonSpeciesID = PokemonSpecies.pokemonSpeciesID
+            Where Pokemons.pokemonID = ?;
+            `,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Pokemon not found' });
+        }
+
+        res.status(200).json(rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Database error' });
+    }
+});
 
 
 
