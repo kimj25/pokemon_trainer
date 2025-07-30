@@ -15,7 +15,9 @@ app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json()); // this is needed for post requests
 
 
-const PORT = 35729;
+const PORT = 35722;
+backendURL = `http://classwork.engr.oregonstate.edu:${PORT}...`;
+
 
 // ########################################
 // ########## ROUTE HANDLERS
@@ -35,6 +37,7 @@ app.get('/pokemon', async (req, res) => {
 app.get('/types', async (req, res) => {
     try {
         // Call stored procedure to get Types data
+        
         const [types] = await db.query('CALL GetAllTypes()');
         res.status(200).json({ types: types[0] });
     } catch (error) {
