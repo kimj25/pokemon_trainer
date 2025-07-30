@@ -1,6 +1,7 @@
 // ########################################
 // ########## SETUP
 
+
 // Database
 const db = require('./database/db-connector');
 
@@ -55,6 +56,17 @@ app.get('/species', async (req, res) => {
     } catch (error) {
         console.error("Error calling stored procedure:", error);
         res.status(500).send("An error occurred while retrieving Species.");
+    }
+});
+
+app.get('/trainers', async (req, res) => {
+    try {
+        // Call stored procedure to get Types data
+        const [trainers] = await db.query('CALL GetAllTrainers()');
+        res.status(200).json({ trainers: trainers[0] });
+    } catch (error) {
+        console.error("Error executing Trainers query:", error);
+        res.status(500).send("An error occurred while retrieving Trainers.");
     }
 });
 

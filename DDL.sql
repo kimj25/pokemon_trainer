@@ -131,7 +131,7 @@ Values
     ('Earth Badge', 'Viridian City');
 
 -- which trainers have which badge test
-Insert Into TrainerBadges (badgeID, trainerID) 
+Insert Into TrainerBadges (badgeID, trainerID, dateEarned) 
 Values
     (1, 1, 2025-04-10),  -- Ash has Boulder Badge
     (2, 2, 2024-03-15);  -- Misty has Cascade Badge

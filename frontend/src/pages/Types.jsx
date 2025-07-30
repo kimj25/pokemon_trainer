@@ -6,6 +6,7 @@ function Types({ backendURL }) {
 
     const getData = async () => {
         try {
+            console.log('📡 Fetching trainers data from:', `${backendURL}/types`);
             const response = await fetch(`${backendURL}/types`);
             const { types } = await response.json();
             setTypes(types);

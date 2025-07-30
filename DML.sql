@@ -9,6 +9,7 @@ Drop Procedure If Exists GetSpeciesByTypeWithPagination //
 Drop Procedure If Exists DeletePokemonById //
 Drop Procedure If Exists InsertPokemon //
 Drop Procedure If Exists UpdatePokemon //
+DROP Procedure If Exists GetAllTrainers //
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()
@@ -115,4 +116,17 @@ Begin
     Where pokemonID = in_pokemonID;
 End //
 
-Delimiter ;
+-- Procedures to retrieve for the trainers page
+DELIMITER //
+
+CREATE PROCEDURE GetAllTrainers()
+BEGIN
+    SELECT 
+        trainerID,
+        trainerName,
+        homeTown
+    FROM Trainers
+    ORDER BY trainerID;
+END //
+
+DELIMITER ;
