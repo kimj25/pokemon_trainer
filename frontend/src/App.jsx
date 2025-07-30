@@ -29,7 +29,7 @@ function App() {
                 <Route path="/species" element={<PokeDex backendURL={backendURL} />} />
                 <Route path="/types" element={<Types backendURL={backendURL} />} />
                 <Route path="/pokemon/:id" element={<UpdatePokemonForm backendURL={backendURL} />} />
-                <Route path="/trainers" element={<Types backendURL={backendURL} />} />
+                <Route path="/trainers" element={<Trainers backendURL={backendURL} />} />
                 <Route path="/badges" element={<Badges backendURL={backendURL} />} />
                 <Route path="/trainerbadges" element={<TrainerBadges backendURL={backendURL} />} />
             </Routes>
