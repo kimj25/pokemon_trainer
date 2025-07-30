@@ -197,6 +197,25 @@ app.get('/pokemon/:id', async (req, res) => {
     }
 });
 
+// Citation: Had Claude generate this code for creating a new Trainer
+app.post('/trainers', async (req, res) => {
+    const { trainerName, homeTown } = req.body;
+
+    // Validation
+    if (!trainerName || !homeTown) {
+        return res.status(400).json({ error: 'Trainer name and home town are required' });
+    }
+
+    try {
+        // Option 1: If you want to use a stored procedure (like your Pokemon routes)
+        await db.execute('CALL InsertTrainer(?, ?)', [trainerName.trim(), homeTown.trim()]);
+        res.status(201).json({ message: 'Trainer added successfully' });
+    } catch (error) {
+        console.error('Error adding trainer:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 // ########################################

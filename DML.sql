@@ -10,6 +10,7 @@ Drop Procedure If Exists DeletePokemonById //
 Drop Procedure If Exists InsertPokemon //
 Drop Procedure If Exists UpdatePokemon //
 Drop Procedure If Exists GetAllTrainers //
+Drop Procedure If Exists InsertTrainers //
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()
@@ -125,6 +126,16 @@ Begin
         homeTown
     From Trainers
     Order by trainerID;
+END //
+
+Create Procedure InsertTrainers(
+    In in_trainerName VarChar(50),
+    In in_homeTown VarChar(50)
+)
+Begin
+    Insert Into Trainers (trainerName, homeTown)
+    Values (in_trainerName, in_homeTown);
+
 END //
 
 DELIMITER ;
