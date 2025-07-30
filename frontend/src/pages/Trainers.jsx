@@ -23,13 +23,13 @@ function Trainers({ backendURL }) {
     }
   };
 // Citation: Used copilot to add form handling for adding new trainers
+// Prompt: Create handlers for form input and submission based on the get, post, and frontend code provided
   const handleInputChange = (e) => {
     setFormData({
         ...formData,
         [e.target.name]: e.target.value
     });
   };
-// Citation: Used copilot to add form submission logic for adding new trainers
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -64,6 +64,7 @@ function Trainers({ backendURL }) {
   if (loading) return <p>Loading trainers...</p>;
 
   // Citation: Used copilot to improve coding for adding new trainers
+  // Prompt: Help me improve and correctly handle the form for adding new trainers
   return (
     <>
       <h1>Trainers</h1>

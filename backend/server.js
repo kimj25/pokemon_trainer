@@ -73,6 +73,16 @@ app.get('/trainers', async (req, res) => {
     }
 });
 
+app.get('/badges', async (req, res) => {
+    try {
+        const [badges] = await db.query('SELECT * FROM Badges ORDER BY badgeID');
+        res.status(200).json({ badges: badges });
+    } catch (error) {
+        console.error("Error executing Badges query:", error);
+        res.status(500).json({ error: "An error occurred while retrieving Badges." });
+    }
+});
+
 app.delete('/pokemons/:pokemonID', async (req, res) => {
     const { pokemonID } = req.params;
 
@@ -90,6 +100,7 @@ app.delete('/pokemons/:pokemonID', async (req, res) => {
         res.status(500).json({ error: "An error occurred while deleting the Pokemon." });
     }
 });
+
 
 // Citation: Had chatgpt generate this code for creating a new Pokémon
 // Prompt: Create post request based on front end and dml provided
@@ -198,16 +209,15 @@ app.get('/pokemon/:id', async (req, res) => {
 });
 
 // Citation: Had Claude generate this code for creating a new Trainer
+// Prompt: Create post request for trainers based on frontend and dml provided
 app.post('/trainers', async (req, res) => {
     const { trainerName, homeTown } = req.body;
 
-    // Validation
     if (!trainerName || !homeTown) {
         return res.status(400).json({ error: 'Trainer name and home town are required' });
     }
 
     try {
-        // Option 1: If you want to use a stored procedure (like your Pokemon routes)
         await db.execute('CALL InsertTrainer(?, ?)', [trainerName.trim(), homeTown.trim()]);
         res.status(201).json({ message: 'Trainer added successfully' });
     } catch (error) {

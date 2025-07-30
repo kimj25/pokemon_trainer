@@ -2,38 +2,27 @@ import React, { useState, useEffect } from 'react';
 
 function Badges({ backendURL }) {
     const [badges, setBadges] = useState([]);
-    const [formData, setFormData] = useState({
-        badgeName: '',
-        gymLocation: ''
-    });
+    const [loading, setLoading] = useState(true);
 
     const getData = async () => {
         try {
-            const response = await fetch(`${backendURL}/api/badges`);
+            const response = await fetch(`${backendURL}/badges`);
             const data = await response.json();
             setBadges(data.badges || data);
         } catch (error) {
             console.error("Failed to fetch badges:", error);
-            setBadges([]); // Just empty array if it fails
+            setBadges([]);
+        } finally {
+            setLoading(false);
         }
-    };
-
-    const handleInputChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert(`Adding badge: ${formData.badgeName} from ${formData.gymLocation}`);
-        setFormData({ badgeName: '', gymLocation: '' });
     };
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [backendURL]);
+
+    if (loading) return <p>Loading badges...</p>;
+    if (badges.length === 0) return <p>No badges found.</p>;
 
     return (
         <div>
@@ -57,31 +46,6 @@ function Badges({ backendURL }) {
                     ))}
                 </tbody>
             </table>
-            
-            <br/>
-            
-            <h2>Add New Badge</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Badge Name: </label>
-                <input
-                    type="text"
-                    name="badgeName"
-                    value={formData.badgeName}
-                    onChange={handleInputChange}
-                    required
-                />
-                <br/><br/>
-                <label>Gym Location: </label>
-                <input
-                    type="text"
-                    name="gymLocation"
-                    value={formData.gymLocation}
-                    onChange={handleInputChange}
-                    required
-                />
-                <br/><br/>
-                <button type="submit">Add Badge</button>
-            </form>
             
             <p>Total badges: {badges.length}</p>
         </div>
