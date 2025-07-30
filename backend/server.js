@@ -101,7 +101,18 @@ app.delete('/pokemons/:pokemonID', async (req, res) => {
     }
 });
 
-
+//Citation: Had chatgpt4 generate get function for TrainerBadges
+//Prompt: Create get request for Trainerbadges based on DML and frontend page provided
+app.get('/trainerbadges', async (req, res) => {
+    try {
+        // Use the stored procedure instead of raw SQL
+        const [trainerBadges] = await db.query('CALL GetAllTrainerBadges()');
+        res.status(200).json({ trainerBadges: trainerBadges[0] });
+    } catch (error) {
+        console.error("Error executing TrainerBadges query:", error);
+        res.status(500).json({ error: "An error occurred while retrieving TrainerBadges." });
+    }
+});
 // Citation: Had chatgpt generate this code for creating a new Pokémon
 // Prompt: Create post request based on front end and dml provided
 // with fields for species name, nickname, level, trainer ID, and date caught based on the front end

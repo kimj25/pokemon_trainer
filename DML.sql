@@ -11,6 +11,7 @@ Drop Procedure If Exists InsertPokemon //
 Drop Procedure If Exists UpdatePokemon //
 Drop Procedure If Exists GetAllTrainers //
 Drop Procedure If Exists InsertTrainers //
+Drop Procedure If Exists GetAllTrainerBadges //
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()
@@ -137,5 +138,25 @@ Begin
     Values (in_trainerName, in_homeTown);
 
 END //
+
+-- Citation: Had chatgpt generate this code for creating a GET route for TrainerBadges
+-- Prompt: Create a GET route for TrainerBadges that joins with Trainers and Badges tables 
+-- to show trainer names, badge names, and gymlocations instead of just IDs
+-- order by trainer ID and date earned
+CREATE PROCEDURE GetAllTrainerBadges()
+BEGIN
+    SELECT
+        TrainerBadges.trainerBadgeID,
+        Trainers.trainerID,
+        Trainers.trainerName,
+        Badges.badgeID,
+        Badges.badgeName,
+        TrainerBadges.dateEarned
+    FROM TrainerBadges
+    JOIN Trainers ON TrainerBadges.trainerID = Trainers.trainerID
+    JOIN Badges ON TrainerBadges.badgeID = Badges.badgeID
+    ORDER BY Trainers.trainerID, TrainerBadges.dateEarned;
+END //
+
 
 DELIMITER ;
