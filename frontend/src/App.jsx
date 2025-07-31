@@ -22,7 +22,7 @@ function App() {
 
     return (
         <>
-            <Navigation />
+            <Navigation backendURL={backendURL} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/pokemon" element={<Pokemon backendURL={backendURL} />} />
