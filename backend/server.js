@@ -83,6 +83,20 @@ app.get('/badges', async (req, res) => {
     }
 });
 
+//Citation: Had chatgpt4 generate get function for TrainerBadges
+//Prompt: Create get request for Trainerbadges based on DML and frontend page provided
+// Call GetAllTrainerBadges stored procedure to retrieve trainer badges
+app.get('/trainerbadges', async (req, res) => {
+    try {
+        // Use the stored procedure instead of raw SQL
+        const [trainerBadges] = await db.query('CALL GetAllTrainerBadges()');
+        res.status(200).json({ trainerBadges: trainerBadges[0] });
+    } catch (error) {
+        console.error("Error executing TrainerBadges query:", error);
+        res.status(500).json({ error: "An error occurred while retrieving TrainerBadges." });
+    }
+});
+
 app.delete('/pokemons/:pokemonID', async (req, res) => {
     const { pokemonID } = req.params;
 
@@ -101,18 +115,7 @@ app.delete('/pokemons/:pokemonID', async (req, res) => {
     }
 });
 
-//Citation: Had chatgpt4 generate get function for TrainerBadges
-//Prompt: Create get request for Trainerbadges based on DML and frontend page provided
-app.get('/trainerbadges', async (req, res) => {
-    try {
-        // Use the stored procedure instead of raw SQL
-        const [trainerBadges] = await db.query('CALL GetAllTrainerBadges()');
-        res.status(200).json({ trainerBadges: trainerBadges[0] });
-    } catch (error) {
-        console.error("Error executing TrainerBadges query:", error);
-        res.status(500).json({ error: "An error occurred while retrieving TrainerBadges." });
-    }
-});
+
 // Citation: Had chatgpt generate this code for creating a new Pokémon
 // Prompt: Create post request based on front end and dml provided
 // with fields for species name, nickname, level, trainer ID, and date caught based on the front end
@@ -219,20 +222,27 @@ app.get('/pokemon/:id', async (req, res) => {
     }
 });
 
-// Citation: Had Claude generate this code for creating a new Trainer
-// Prompt: Create post request for trainers based on frontend and dml provided
-app.post('/trainers', async (req, res) => {
-    const { trainerName, homeTown } = req.body;
+// Citation: Had Claude Sonnet 4 update the code for the TrainerBadges post request
+// Prompt: Create post request for TrainerBadges based on the frontend and dml provided
+// This will insert a new trainer badge record
+app.post('/trainerbadges', async (req, res) => {
+    const { trainerID, badgeID, dateEarned } = req.body;
 
-    if (!trainerName || !homeTown) {
-        return res.status(400).json({ error: 'Trainer name and home town are required' });
+    if (!trainerID || !badgeID || !dateEarned) {
+        return res.status(400).json({ error: 'Trainer ID, Badge ID, and Date Earned are required' });
     }
 
     try {
-        await db.execute('CALL InsertTrainer(?, ?)', [trainerName.trim(), homeTown.trim()]);
-        res.status(201).json({ message: 'Trainer added successfully' });
+        await db.execute('CALL InsertTrainerBadges(?, ?, ?)', [trainerID, badgeID, dateEarned]);
+        res.status(201).json({ message: 'Trainer badge record added successfully' });
     } catch (error) {
-        console.error('Error adding trainer:', error);
+        console.error('Error adding trainer badge:', error);
+        
+        // Handle duplicate key error from the UNIQUE constraint
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: 'This trainer already has this badge!' });
+        }
+        
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

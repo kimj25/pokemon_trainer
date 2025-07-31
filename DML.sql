@@ -12,6 +12,7 @@ Drop Procedure If Exists UpdatePokemon //
 Drop Procedure If Exists GetAllTrainers //
 Drop Procedure If Exists InsertTrainers //
 Drop Procedure If Exists GetAllTrainerBadges //
+Drop Procedure If Exists InsertTrainerBadges //
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()
@@ -158,5 +159,20 @@ BEGIN
     ORDER BY Trainers.trainerID, TrainerBadges.dateEarned;
 END //
 
+-- Citation: Had Claude Sonnet 4 generate this code for inserting a new TrainerBadge
+-- Prompt: Create InsertTrainerBadge based on the provided frontend and post request
+-- Let the UNIQUE constraint handle duplicates
+CREATE PROCEDURE InsertTrainerBadges(
+    IN p_trainerID INT,
+    IN p_badgeID INT,
+    IN p_dateEarned DATE
+)
+BEGIN
+    -- Just insert - let the UNIQUE constraint handle duplicates
+    INSERT INTO TrainerBadges (trainerID, badgeID, dateEarned) 
+    VALUES (p_trainerID, p_badgeID, p_dateEarned);
+END //
+
+DELIMITER ;
 
 DELIMITER ;
