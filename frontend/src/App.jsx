@@ -6,13 +6,16 @@ import Home from './pages/Home';
 import PokeDex from './pages/PokeDex';
 import Pokemon from './pages/Pokemons';
 import Types from './pages/Types';
+import Trainers from './pages/Trainers';
+import Badges from './pages/Badges';
+import TrainerBadges from './pages/TrainerBadges';
 import UpdatePokemonForm from './components/UpdatePokemonForm';
 
 // Components
 import Navigation from './components/Navigation';
 
 // Define the backend port and URL for API requests
-const backendPort = 35729;  // Use the port you assigned to the backend server, this would normally go in a .env file
+const backendPort = 35722;  // Use the port you assigned to the backend server, this would normally go in a .env file
 const backendURL = `http://classwork.engr.oregonstate.edu:${backendPort}`;
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
                 <Route path="/species" element={<PokeDex backendURL={backendURL} />} />
                 <Route path="/types" element={<Types backendURL={backendURL} />} />
                 <Route path="/pokemon/:id" element={<UpdatePokemonForm backendURL={backendURL} />} />
+                <Route path="/trainers" element={<Trainers backendURL={backendURL} />} />
+                <Route path="/badges" element={<Badges backendURL={backendURL} />} />
+                <Route path="/trainerbadges" element={<TrainerBadges backendURL={backendURL} />} />
             </Routes>
         </>
     );

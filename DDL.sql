@@ -60,6 +60,7 @@ CREATE TABLE TrainerBadges(
     trainerBadgeID int(11) auto_increment,
     badgeID int(11) Not Null,
     trainerID int(11) Not Null,
+    dateEarned date Not Null,
     Unique(trainerID, badgeID),
     Primary Key(trainerBadgeID),
     Foreign Key(badgeID) References Badges(badgeID) On Delete Cascade,
@@ -130,10 +131,11 @@ Values
     ('Earth Badge', 'Viridian City');
 
 -- which trainers have which badge test
-Insert Into TrainerBadges (badgeID, trainerID) 
+Insert Into TrainerBadges (badgeID, trainerID, dateEarned) 
 Values
-    (1, 1),  -- Ash has Boulder Badge
-    (2, 2);  -- Misty has Cascade Badge
+    (1, 1, '2025-04-10'),  -- Ash has Boulder Badge
+    (2, 2, '2024-03-15');  -- Misty has Cascade Badge
+
 
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;

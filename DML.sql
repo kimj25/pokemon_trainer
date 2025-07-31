@@ -9,6 +9,15 @@ Drop Procedure If Exists GetSpeciesByTypeWithPagination //
 Drop Procedure If Exists DeletePokemonById //
 Drop Procedure If Exists InsertPokemon //
 Drop Procedure If Exists UpdatePokemon //
+Drop Procedure If Exists GetAllTrainers //
+Drop Procedure If Exists InsertTrainers //
+Drop procedure If Exists DeleteTrainerById //
+Drop Procedure If Exists GetAllTrainerBadges //
+Drop Procedure If Exists InsertTrainerBadges //
+Drop Procedure If Exists UpdateTrainers //
+Drop Procedure If Exists UpdateTrainerBadges //
+
+
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()
@@ -115,4 +124,96 @@ Begin
     Where pokemonID = in_pokemonID;
 End //
 
-Delimiter ;
+-- Procedures to retrieve for the trainers page
+Create PROCEDURE GetAllTrainers()
+Begin
+    Select
+        trainerID,
+        trainerName,
+        homeTown
+    From Trainers
+    Order by trainerID;
+END //
+
+Create Procedure InsertTrainers(
+    In in_trainerName VarChar(50),
+    In in_homeTown VarChar(50)
+)
+Begin
+    Insert Into Trainers (trainerName, homeTown)
+    Values (in_trainerName, in_homeTown);
+
+END //
+
+Create Procedure UpdateTrainers(
+    In in_trainerID Int,
+    In in_trainerName VarChar(50),
+    In in_homeTown VarChar(50)
+)
+Begin
+    Update Trainers
+    Set
+        trainerName = in_trainerName,
+        homeTown = in_homeTown
+    Where trainerID = in_trainerID;
+End //
+
+
+-- Citation: Had chatgpt generate this code for creating a GET route for TrainerBadges
+-- Prompt: Create a GET route for TrainerBadges that joins with Trainers and Badges tables 
+-- to show trainer names, badge names, and gymlocations instead of just IDs
+-- order by trainer ID and date earned
+CREATE PROCEDURE GetAllTrainerBadges()
+BEGIN
+    SELECT
+        TrainerBadges.trainerBadgeID,
+        Trainers.trainerID,
+        Trainers.trainerName,
+        Badges.badgeID,
+        Badges.badgeName,
+        TrainerBadges.dateEarned
+    FROM TrainerBadges
+    JOIN Trainers ON TrainerBadges.trainerID = Trainers.trainerID
+    JOIN Badges ON TrainerBadges.badgeID = Badges.badgeID
+    ORDER BY Trainers.trainerID, TrainerBadges.dateEarned;
+END //
+
+-- Citation: Had Claude Sonnet 4 generate this code for inserting a new TrainerBadge
+-- Prompt: Create InsertTrainerBadge based on the provided frontend and post request
+-- Let the UNIQUE constraint handle duplicates
+CREATE PROCEDURE InsertTrainerBadges(
+    IN in_trainerID INT,
+    IN in_badgeID INT,
+    IN in_dateEarned DATE
+)
+BEGIN
+    -- Just insert - let the UNIQUE constraint handle duplicates
+    INSERT INTO TrainerBadges (trainerID, badgeID, dateEarned) 
+    VALUES (in_trainerID, in_badgeID, in_dateEarned);
+END //
+
+-- When trainer is deleted, trainerBadges, 
+-- Pokemons are deleted due to On Delete Cascade
+Create Procedure DeleteTrainerById(In inputTrainerID Int)
+Begin
+    Delete from Trainers where trainerID = inputTrainerID;
+End //
+
+
+Create Procedure UpdateTrainerBadges(
+    In in_trainerBadgeID Int,
+    In in_trainerID Int,
+    In in_badgeID Int,
+    In in_dateEarned Date
+)
+Begin
+    Update TrainerBadges
+    Set
+        trainerID = in_trainerID,
+        badgeID = in_badgeID,
+        dateEarned = in_dateEarned
+    Where trainerBadgeID = in_trainerBadgeID;
+End //
+
+
+DELIMITER ;
