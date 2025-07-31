@@ -140,6 +140,20 @@ Begin
 
 END //
 
+Create Procedure UpdateTrainers(
+    In in_trainerID Int,
+    In in_trainerName VarChar(50),
+    In in_homeTown VarChar(50)
+)
+Begin
+    Update Trainers
+    Set
+        trainerName = in_trainerName,
+        homeTown = in_homeTown
+    Where trainerID = in_trainerID;
+End //
+
+
 -- Citation: Had chatgpt generate this code for creating a GET route for TrainerBadges
 -- Prompt: Create a GET route for TrainerBadges that joins with Trainers and Badges tables 
 -- to show trainer names, badge names, and gymlocations instead of just IDs
@@ -163,16 +177,30 @@ END //
 -- Prompt: Create InsertTrainerBadge based on the provided frontend and post request
 -- Let the UNIQUE constraint handle duplicates
 CREATE PROCEDURE InsertTrainerBadges(
-    IN p_trainerID INT,
-    IN p_badgeID INT,
-    IN p_dateEarned DATE
+    IN in_trainerID INT,
+    IN in_badgeID INT,
+    IN in_dateEarned DATE
 )
 BEGIN
     -- Just insert - let the UNIQUE constraint handle duplicates
     INSERT INTO TrainerBadges (trainerID, badgeID, dateEarned) 
-    VALUES (p_trainerID, p_badgeID, p_dateEarned);
+    VALUES (in_trainerID, in_badgeID, in_dateEarned);
 END //
 
-DELIMITER ;
+Create Procedure UpdateTrainerBadges(
+    In in_trainerBadgeID Int,
+    In in_trainerID Int,
+    In in_badgeID Int,
+    In in_dateEarned Date
+)
+Begin
+    Update TrainerBadges
+    Set
+        trainerID = in_trainerID,
+        badgeID = in_badgeID,
+        dateEarned = in_dateEarned
+    Where trainerBadgeID = in_trainerBadgeID;
+End //
+
 
 DELIMITER ;

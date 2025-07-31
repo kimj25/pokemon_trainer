@@ -222,6 +222,21 @@ app.get('/pokemon/:id', async (req, res) => {
     }
 });
 
+app.post('/trainers', async(req, res) => {
+    const {trainerName, homeTown } = req.body;
+
+    if (!trainerName || !homeTown) {
+        return res.status(400).json({ error: 'Trainer Name, and Home Town are required' });
+    }
+    try {
+        await db.execute('INSERT INTO Trainers (trainerName, homeTown) VALUES (?, ?)', [trainerName.trim(), homeTown.trim()]);
+        res.status(201).json({ message: 'Trainer added successfully' });
+    } catch (error) {
+        console.error('Error adding trainer:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Citation: Had Claude Sonnet 4 update the code for the TrainerBadges post request
 // Prompt: Create post request for TrainerBadges based on the frontend and dml provided
 // This will insert a new trainer badge record
