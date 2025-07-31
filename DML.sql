@@ -13,6 +13,9 @@ Drop Procedure If Exists GetAllTrainers //
 Drop Procedure If Exists InsertTrainers //
 Drop Procedure If Exists GetAllTrainerBadges //
 Drop Procedure If Exists InsertTrainerBadges //
+Drop Procedure If Exists UpdateTrainer //
+Drop Procedure If Exists UpdateTrainerBadges //
+
 
 -- Procedures to retrieve for the pokemon page
 Create Procedure GetAllPokemons()

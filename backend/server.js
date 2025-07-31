@@ -229,13 +229,30 @@ app.post('/trainers', async(req, res) => {
         return res.status(400).json({ error: 'Trainer Name, and Home Town are required' });
     }
     try {
-        await db.execute('INSERT INTO Trainers (trainerName, homeTown) VALUES (?, ?)', [trainerName.trim(), homeTown.trim()]);
+        await db.execute('INSERT INTO Trainers (trainerName, homeTown) VALUES (?, ?)', [trainerName, homeTown]);
         res.status(201).json({ message: 'Trainer added successfully' });
     } catch (error) {
         console.error('Error adding trainer:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.put('/trainers/:trainerID', async(req, res) => {
+    const {trainerID} = req.params;
+    const {trainerName, homeTown } = req.body;
+
+    if (!trainerName || ! homeTown) {
+        return res.status(400).json({ error: 'Trainer Name, and Home Town are required' });
+    } 
+    try {
+        await db.execute('CALL UpdateTrainer(?, ?, ?)', [trainerID, trainerName, homeTown]);
+        res.status(200).json({ message: 'Trainer updated successfully' });
+    } catch (error) {
+        console.error('Error updating trainer:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 // Citation: Had Claude Sonnet 4 update the code for the TrainerBadges post request
 // Prompt: Create post request for TrainerBadges based on the frontend and dml provided
@@ -262,6 +279,21 @@ app.post('/trainerbadges', async (req, res) => {
     }
 });
 
+app.put('/trainerbadges/:trainerBadgesID', async(req,res) => {
+    const {trainerBadgesID} = req.params;
+    const {trainerID, badgeID, dateEarned} = req.body;
+
+    if (!trainerID || !badgeID || !dateEarned) {
+        return res.status(400).json({ error: 'Trainer ID, badgeID, dateEarned are required' });
+    } 
+    try {
+        await db.execute('CALL UpdateTrainerBadges(?,?, ?, ?)', [trainerBadgesID, trainerID, trainerName, homeTown]);
+        res.status(200).json({ message: 'Trainer Badge updated successfully' });
+    } catch (error) {
+        console.error('Error updating trainer Badge:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 // ########################################
