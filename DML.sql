@@ -11,10 +11,12 @@ Drop Procedure If Exists InsertPokemon //
 Drop Procedure If Exists UpdatePokemon //
 Drop Procedure If Exists GetAllTrainers //
 Drop Procedure If Exists InsertTrainers //
+Drop procedure If Exists DeleteTrainerById //
 Drop Procedure If Exists GetAllTrainerBadges //
 Drop Procedure If Exists InsertTrainerBadges //
-Drop Procedure If Exists UpdateTrainer //
+Drop Procedure If Exists UpdateTrainers //
 Drop Procedure If Exists UpdateTrainerBadges //
+
 
 
 -- Procedures to retrieve for the pokemon page
@@ -189,6 +191,14 @@ BEGIN
     INSERT INTO TrainerBadges (trainerID, badgeID, dateEarned) 
     VALUES (in_trainerID, in_badgeID, in_dateEarned);
 END //
+
+-- When trainer is deleted, trainerBadges, 
+-- Pokemons are deleted due to On Delete Cascade
+Create Procedure DeleteTrainerById(In inputTrainerID Int)
+Begin
+    Delete from Trainers where trainerID = inputTrainerID;
+End //
+
 
 Create Procedure UpdateTrainerBadges(
     In in_trainerBadgeID Int,

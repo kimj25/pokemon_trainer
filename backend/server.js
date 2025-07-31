@@ -245,7 +245,7 @@ app.put('/trainers/:trainerID', async(req, res) => {
         return res.status(400).json({ error: 'Trainer Name, and Home Town are required' });
     } 
     try {
-        await db.execute('CALL UpdateTrainer(?, ?, ?)', [trainerID, trainerName, homeTown]);
+        await db.execute('CALL UpdateTrainers(?, ?, ?)', [trainerID, trainerName, homeTown]);
         res.status(200).json({ message: 'Trainer updated successfully' });
     } catch (error) {
         console.error('Error updating trainer:', error);
@@ -253,6 +253,23 @@ app.put('/trainers/:trainerID', async(req, res) => {
     }
 });
 
+app.delete('/trainers/:trainerID', async (req, res) => {
+    const { trainerID } = req.params;
+
+    if (!trainerID) {
+        return res.status(400).json({ error: "trainerID parameter is required" });
+    }
+
+    try {
+        // Call the stored procedure to delete the trainer by ID
+        await db.query('CALL DeleteTrainerById(?)', [trainerID]);
+
+        res.status(200).json({ message: `Trainer with ID ${trainerID} deleted successfully.` });
+    } catch (error) {
+        console.error("Error deleting Trainer:", error);
+        res.status(500).json({ error: "An error occurred while deleting the Trainer." });
+    }
+});
 
 // Citation: Had Claude Sonnet 4 update the code for the TrainerBadges post request
 // Prompt: Create post request for TrainerBadges based on the frontend and dml provided
