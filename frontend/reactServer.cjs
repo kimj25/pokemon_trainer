@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 app.use(express.static(path.join(__dirname, 'dist')));
 
-const PORT = 6009;
+const PORT = 3213;
 
 // ########################################
 // ########## ROUTE HANDLERS
