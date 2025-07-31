@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-      "development": "vite",
-      "build": "vite build",
-      "production": "npx forever start reactServer.cjs",
-      "stop_production": "npx forever stop reactServer.cjs",
-      "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-      "preview": "vite preview"
+    "development": "vite",
+    "build": "vite build",
+    "production": "npx forever start reactServer.cjs",
+    "stop_production": "npx forever stop reactServer.cjs",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
     "express": "^5.1.0",
