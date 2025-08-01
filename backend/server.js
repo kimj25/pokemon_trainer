@@ -312,6 +312,18 @@ app.put('/trainerbadges/:trainerBadgesID', async(req,res) => {
     }
 });
 
+// Adding reset backend server call to ResetDatabase();
+// Citation: ChatGpt
+// Prompt: Generate a reset post with ResetDatabase();
+app.post('/reset', async (req, res) => {
+    try {
+        await db.query("CALL ResetDatabase();");
+        res.status(200).json({ message: "Database reset successfully" });
+    } catch (error) {
+        console.error("Error resetting database:", error);
+        res.status(500).json({ error: "Failed to reset database" });
+    }
+});
 
 // ########################################
 // ########## LISTENER
