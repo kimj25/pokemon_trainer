@@ -1,5 +1,5 @@
 import { useState, useEffect, use } from 'react';
-import GenericTableRow from '../components/GenericTableRow';
+
 
 function TrainerBadges({ backendURL }) {
     const [trainerBadges, setTrainerBadges] = useState([]);
@@ -107,6 +107,27 @@ function TrainerBadges({ backendURL }) {
             setSubmitting(false);
           }
         };
+
+      const handleDelete = async (trainerBadgeID) => {
+    if (window.confirm('Delete this trainer badge record?')) {
+        try {
+            const response = await fetch(`${backendURL}/trainerbadges/${trainerBadgeID}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Trainer badge record deleted successfully!');
+                getTrainerBadgesData(); // Refresh the data
+            } else {
+                alert('Failed to delete trainer badge record');
+            }
+        } catch (error) {
+            console.error('Error deleting trainer badge:', error);
+            alert('Error deleting trainer badge record');
+        }
+    }
+        };
+
       useEffect(() => {
         getData();
     }, [backendURL]);
@@ -117,27 +138,33 @@ function TrainerBadges({ backendURL }) {
       <h1>Trainer Badges Information</h1>
       <p> Shows Trainer's Current Badge Status </p>
       
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Trainer Badge ID</th>
-            <th>Trainer Name</th>
-            <th>Badge Name</th>
-            <th>Date Earned</th>
-          </tr>
-        </thead>
-        <tbody>
-          {trainerBadges.map((badge, idx) => (
-            <tr key={badge.trainerBadgeID || idx}>
-              <td>{badge.trainerBadgeID}</td>
-              <td>{badge.trainerName}</td>
-              <td>{badge.badgeName}</td>
-              <td>{formatDate(badge.dateEarned)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <table border="1">
+    <thead>
+      <tr>
+        <th>Trainer Badge ID</th>
+        <th>Trainer Name</th>
+        <th>Badge Name</th>
+        <th>Date Earned</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
+    <tbody>
+      {trainerBadges.map((trainerBadge, idx) => (
+        <tr key={trainerBadge.trainerBadgeID || idx}>
+          <td>{trainerBadge.trainerBadgeID}</td>
+          <td>{trainerBadge.trainerName}</td>
+          <td>{trainerBadge.badgeName}</td>
+          <td>{formatDate(trainerBadge.dateEarned)}</td>
+          <td>
+            <button onClick={() => handleEdit(trainerBadge.trainerBadgeID)}>Edit</button>
+            <button onClick={() => handleDelete(trainerBadge.trainerBadgeID)}>Delete</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+    </table>
+      
       <br/>
       
       <h2>Award Badge to Trainer</h2>

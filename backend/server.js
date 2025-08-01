@@ -296,19 +296,40 @@ app.post('/trainerbadges', async (req, res) => {
     }
 });
 
-app.put('/trainerbadges/:trainerBadgesID', async(req,res) => {
-    const {trainerBadgesID} = req.params;
+app.put('/trainerbadges/:trainerBadgeID', async(req,res) => {
+    const {trainerBadgeID} = req.params;
     const {trainerID, badgeID, dateEarned} = req.body;
 
     if (!trainerID || !badgeID || !dateEarned) {
         return res.status(400).json({ error: 'Trainer ID, badgeID, dateEarned are required' });
     } 
     try {
-        await db.execute('CALL UpdateTrainerBadges(?,?, ?, ?)', [trainerBadgesID, trainerID, trainerName, homeTown]);
+        await db.execute('CALL UpdateTrainerBadges(?,?, ?, ?)', [trainerBadgeID, trainerID, trainerName, homeTown]);
         res.status(200).json({ message: 'Trainer Badge updated successfully' });
     } catch (error) {
         console.error('Error updating trainer Badge:', error);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Citation: Had Claude Sonnet generate code for deleting a trainer badge
+// Prompt: Generate Delete request for TrainBadges based on the frontend and dml provided
+// Delete only the badge record, not the trainer
+app.delete('/trainerbadges/:trainerBadgeID', async (req, res) => {
+    const { trainerBadgeID } = req.params;
+
+    if (!trainerBadgeID) {
+        return res.status(400).json({ error: "trainerBadgeID parameter is required" });
+    }
+
+    try {
+        // Direct SQL delete (or use your stored procedure)
+        await db.execute('DELETE FROM TrainerBadges WHERE trainerBadgeID = ?', [trainerBadgeID]);
+        
+        res.status(200).json({ message: `Trainer badge with ID ${trainerBadgeID} deleted successfully.` });
+    } catch (error) {
+        console.error("Error deleting trainer badge:", error);
+        res.status(500).json({ error: "An error occurred while deleting the trainer badge." });
     }
 });
 
