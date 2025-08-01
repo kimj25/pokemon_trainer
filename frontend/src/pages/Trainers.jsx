@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import GenericTableRow from '../components/GenericTableRow';
+import TableRowWithDelete from '../components/TableRowWithDelete';
+import DeleteTrainerForm from '../components/DeleteTrainer';
+
 
 function Trainers({ backendURL }) {
   const [trainers, setTrainers] = useState([]);
@@ -63,8 +66,8 @@ function Trainers({ backendURL }) {
 
   if (loading) return <p>Loading trainers...</p>;
 
-  // Citation: Used copilot to improve coding for adding new trainers
-  // Prompt: Help me improve and correctly handle the form for adding new trainers
+  // Citation: Used copilot to improve coding for adding, deletingnew trainers
+  // Prompt: Help me improve and correctly handle the form for adding, deleting new trainers
   return (
     <>
       <h1>Trainers</h1>
@@ -75,17 +78,21 @@ function Trainers({ backendURL }) {
             {Object.keys(trainers[0] || {}).map((header, idx) => (
               <th key={idx}>{header}</th>
             ))}
+            <th>Actions</th>
           </tr>
         </thead>
 
-        <tbody>
-          {trainers.map((trainer, idx) => (
-            <GenericTableRow
-              key={trainer.trainerID ?? idx}
-              rowObject={trainer}
-            />
-          ))}
-        </tbody>
+      <tbody>
+        {trainers.map((trainer, idx) => (
+          <TableRowWithDelete
+            key={trainer.trainerID || idx}
+            rowObject={trainer}
+            backendURL={backendURL}
+            refreshData={getData}
+            DeleteFormComponent={DeleteTrainerForm}
+          />
+        ))}
+      </tbody>
       </table>
 
       <h2>Add New Trainer</h2>
