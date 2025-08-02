@@ -10,8 +10,9 @@ function Trainers({ backendURL }) {
       trainerName: '',
       homeTown: ''
   });
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  
+  const [editing, setEditing] = useState(null);
+
 
   const getData = async () => {
     try {
@@ -62,6 +63,25 @@ function Trainers({ backendURL }) {
     }
   };
 
+  /// Citation: Used copilot to add edit and delete functionality
+  // Prompt: Help me finish the code for handling edit and delete
+  // based on the provided DML, frontend and backend code
+  const handleEdit = async (trainerID) => {
+    try {
+        const response = await fetch(`${backendURL}/trainers/${trainerID}`);
+        const data = await response.json();
+        setEditFormData({
+            trainerName: data.trainerName,
+            homeTown: data.homeTown
+        });
+        setEditing(trainerID);
+    } catch (error) {
+        console.error('Error fetching trainer for edit:', error);
+        alert('Error loading trainer data for editing');
+    }
+  };  
+        
+
   useEffect(() => {getData();}, [backendURL]);
 
   if (loading) return <p>Loading trainers...</p>;
@@ -82,17 +102,20 @@ function Trainers({ backendURL }) {
           </tr>
         </thead>
 
-      <tbody>
-        {trainers.map((trainer, idx) => (
-          <TableRowWithDelete
-            key={trainer.trainerID || idx}
-            rowObject={trainer}
-            backendURL={backendURL}
-            refreshData={getData}
-            DeleteFormComponent={DeleteTrainerForm}
-          />
-        ))}
-      </tbody>
+        <tbody>
+          {trainer.map((trainer, idx) => (
+            <tr key={trainer.trainerID || idx}>
+              <td>{trainer.trainerID}</td>
+              <td>{trainer.trainerName}</td>
+              <td>{trainer.homeTown}</td>
+              <td>{formatDate(trainerBadge.dateEarned)}</td>
+              <td>
+                <button onClick={() => handleEdit(trainer.trainerID)}>Edit</button>
+                <button onClick={() => handleDelete(trainer.trainerID)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
 
       <h2>Add New Trainer</h2>

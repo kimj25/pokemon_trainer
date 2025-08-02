@@ -222,6 +222,24 @@ app.get('/pokemon/:id', async (req, res) => {
     }
 });
 
+app.get('/trainers/:trainerID', async (req, res) => {
+    const {trainerID} = req.params;
+
+    try {
+        const [rows] = await db.query(
+            'CALL GetTrainerById(?)',[trainerID]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Trainer not found' });
+        }       
+    res.status
+    }catch (error) {
+        console.error('Error fetching trainer:', error);
+        res.status(500).json({ message: 'Database Error' });
+    }
+});
+
 app.post('/trainers', async(req, res) => {
     const {trainerName, homeTown } = req.body;
 
@@ -229,7 +247,7 @@ app.post('/trainers', async(req, res) => {
         return res.status(400).json({ error: 'Trainer Name, and Home Town are required' });
     }
     try {
-        await db.execute('INSERT INTO Trainers (trainerName, homeTown) VALUES (?, ?)', [trainerName, homeTown]);
+        await db.execute('CALL InsertTrainer(?,?)', [trainerName, homeTown]);
         res.status(201).json({ message: 'Trainer added successfully' });
     } catch (error) {
         console.error('Error adding trainer:', error);
