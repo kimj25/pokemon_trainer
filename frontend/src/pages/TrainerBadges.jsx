@@ -108,7 +108,7 @@ function TrainerBadges({ backendURL }) {
           }
         };
 
-      const handleDelete = async (trainerBadgeID) => {
+    const handleDelete = async (trainerBadgeID) => {
     if (window.confirm('Delete this trainer badge record?')) {
         try {
             const response = await fetch(`${backendURL}/trainerbadges/${trainerBadgeID}`, {

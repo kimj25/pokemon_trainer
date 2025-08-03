@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import GenericTableRow from '../components/GenericTableRow';
 import TableRowWithDelete from '../components/TableRowWithDelete';
-import DeleteTrainerForm from '../components/DeleteTrainer';
+import DeleteTrainerForm from '../components/DeleteTrainerForm';
 
 
 function Trainers({ backendURL }) {
@@ -13,6 +13,10 @@ function Trainers({ backendURL }) {
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);  
   const [editing, setEditing] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    trainerName: '',
+    homeTown: ''
+  });
 
 
   const getData = async () => {
@@ -82,7 +86,27 @@ function Trainers({ backendURL }) {
     }
   };  
         
+  const handleDelete = async (trainerID) => {
+    if (window.confirm('Delete this trainer record?')) {
+        try {
+            const response = await fetch(`${backendURL}/trainers/${trainerID}`, {
+                method: 'DELETE'
+            });
 
+            if (response.ok) {
+                alert('Trainer record deleted successfully!');
+                getData(); // Refresh the data
+            } else {
+                alert('Failed to delete trainer record');
+            }
+        } catch (error) {
+            console.error('Error deleting trainer:', error);
+            alert('Error deleting trainer record');
+        }
+    }
+        };
+
+  
   useEffect(() => {getData();}, [backendURL]);
 
   if (loading) return <p>Loading trainers...</p>;
@@ -104,18 +128,14 @@ function Trainers({ backendURL }) {
         </thead>
 
         <tbody>
-          {trainers.map((trainers, idx) => (
-            <tr key={trainers.trainerID || idx}>
-              <td>{trainers.trainerID}</td>
-              <td>{trainers.trainerName}</td>
-              <td>{trainers.homeTown}</td>
+          {trainers.map((trainer, idx) => (
+            <tr key={trainer.trainerID || idx}>
+              <td>{trainer.trainerID}</td>
+              <td>{trainer.trainerName}</td>
+              <td>{trainer.homeTown}</td>
               <td>
-                <button onClick={() => handleEdit(trainers.trainerID)}>Edit</button>
-                <DeleteTrainerForm 
-                  rowObject={trainers}
-                  backendURL={backendURL}
-                  refreshData={getData}
-                />
+                <button onClick={() => handleEdit(trainer.trainerID)}>Edit</button>
+                <button onClick={() => handleDelete(trainer.trainerID)}>Delete</button>
               </td>
             </tr>
           ))}
