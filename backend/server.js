@@ -62,16 +62,6 @@ app.get('/species', async (req, res) => {
     }
 });
 
-app.get('/trainers', async (req, res) => {
-    try {
-        // Call stored procedure to get Types data
-        const [trainers] = await db.query('CALL GetAllTrainers()');
-        res.status(200).json({ trainers: trainers[0] });
-    } catch (error) {
-        console.error("Error executing Trainers query:", error);
-        res.status(500).send("An error occurred while retrieving Trainers.");
-    }
-});
 
 app.get('/badges', async (req, res) => {
     try {
@@ -227,16 +217,28 @@ app.get('/trainers/:trainerID', async (req, res) => {
 
     try {
         const [rows] = await db.query(
-            'CALL GetTrainerById(?)',[trainerID]
+            'CALL GetTrainerById(?)', [trainerID]
         );
 
-        if (rows.length === 0) {
+        if (rows[0].length === 0) {
             return res.status(404).json({ message: 'Trainer not found' });
         }       
-    res.status
-    }catch (error) {
+        
+        res.status(200).json(rows[0][0]); // Return the first row of the first result set
+    } catch (error) {
         console.error('Error fetching trainer:', error);
         res.status(500).json({ message: 'Database Error' });
+    }
+});
+
+app.get('/trainers', async (req, res) => {
+    try {
+        // Call stored procedure to get Types data
+        const [trainers] = await db.query('CALL GetAllTrainers()');
+        res.status(200).json({ trainers: trainers[0] });
+    } catch (error) {
+        console.error("Error executing Trainers query:", error);
+        res.status(500).send("An error occurred while retrieving Trainers.");
     }
 });
 

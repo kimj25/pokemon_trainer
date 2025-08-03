@@ -10,7 +10,8 @@ function Trainers({ backendURL }) {
       trainerName: '',
       homeTown: ''
   });
-  
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);  
   const [editing, setEditing] = useState(null);
 
 
@@ -103,15 +104,18 @@ function Trainers({ backendURL }) {
         </thead>
 
         <tbody>
-          {trainer.map((trainer, idx) => (
-            <tr key={trainer.trainerID || idx}>
-              <td>{trainer.trainerID}</td>
-              <td>{trainer.trainerName}</td>
-              <td>{trainer.homeTown}</td>
-              <td>{formatDate(trainerBadge.dateEarned)}</td>
+          {trainers.map((trainers, idx) => (
+            <tr key={trainers.trainerID || idx}>
+              <td>{trainers.trainerID}</td>
+              <td>{trainers.trainerName}</td>
+              <td>{trainers.homeTown}</td>
               <td>
-                <button onClick={() => handleEdit(trainer.trainerID)}>Edit</button>
-                <button onClick={() => handleDelete(trainer.trainerID)}>Delete</button>
+                <button onClick={() => handleEdit(trainers.trainerID)}>Edit</button>
+                <DeleteTrainerForm 
+                  rowObject={trainers}
+                  backendURL={backendURL}
+                  refreshData={getData}
+                />
               </td>
             </tr>
           ))}
