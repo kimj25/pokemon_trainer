@@ -15,7 +15,7 @@ app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json()); // this is needed for post requests
 
 
-const PORT = 35761;
+const PORT = 35706;
 backendURL = `http://classwork.engr.oregonstate.edu:${PORT}...`;
 
 
