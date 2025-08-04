@@ -73,19 +73,6 @@ app.get('/badges', async (req, res) => {
     }
 });
 
-//Citation: Had chatgpt4 generate get function for TrainerBadges
-//Prompt: Create get request for Trainerbadges based on DML and frontend page provided
-// Call GetAllTrainerBadges stored procedure to retrieve trainer badges
-app.get('/trainerbadges', async (req, res) => {
-    try {
-        // Use the stored procedure instead of raw SQL
-        const [trainerBadges] = await db.query('CALL GetAllTrainerBadges()');
-        res.status(200).json({ trainerBadges: trainerBadges[0] });
-    } catch (error) {
-        console.error("Error executing TrainerBadges query:", error);
-        res.status(500).json({ error: "An error occurred while retrieving TrainerBadges." });
-    }
-});
 
 app.delete('/pokemons/:pokemonID', async (req, res) => {
     const { pokemonID } = req.params;
@@ -272,6 +259,56 @@ app.delete('/trainers/:trainerID', async (req, res) => {
     }
 });
 
+// Citation: Had Claude Sonnet generate code for deleting a trainer badge
+// Prompt: Generate Delete request for TrainBadges based on the frontend and dml provided
+// Delete only the badge record, not the trainer
+app.delete('/trainerbadges/:trainerBadgeID', async (req, res) => {
+    const { trainerBadgeID } = req.params;
+    console.log('Deleting trainer badge with ID:', trainerBadgeID);
+    if (!trainerBadgeID) {
+        return res.status(400).json({ error: "trainerBadgeID parameter is required" });
+    }
+
+    try {
+        // Direct SQL delete (or use your stored procedure)
+        await db.execute('DELETE FROM TrainerBadges WHERE trainerBadgeID = ?', [trainerBadgeID]);
+        
+        res.status(200).json({ message: `Trainer badge with ID ${trainerBadgeID} deleted successfully.` });
+    } catch (error) {
+        console.error("Error deleting trainer badge:", error);
+        res.status(500).json({ error: "An error occurred while deleting the trainer badge." });
+    }
+});
+
+app.put('/trainerbadges/:trainerBadgeID', async(req, res) => {
+    const {trainerBadgeID} = req.params;
+    const {trainerID, badgeID, dateEarned} = req.body;
+
+    if (!trainerID || !badgeID || !dateEarned) {
+        return res.status(400).json({ error: 'Trainer ID, badgeID, dateEarned are required' });
+    } 
+    
+    try {
+        console.log('Updating trainer badge with data:', { trainerID, badgeID, dateEarned, trainerBadgeID });
+        // Use direct SQL instead of stored procedure
+        const [result] = await db.execute(
+            'UPDATE TrainerBadges SET trainerID = ?, badgeID = ?, dateEarned = ? WHERE trainerBadgeID = ?',
+            [trainerID, badgeID, dateEarned, trainerBadgeID]
+        );
+        
+        console.log('Update result:', result);
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Trainer badge not found' });
+        }
+        
+        res.status(200).json({ message: 'Trainer Badge updated successfully' });
+    } catch (error) {
+        console.error('Error updating trainer Badge:', error);
+        res.status(500).json({ error: 'Internal server error yooo', details: error.message });
+    }
+});
+
 // Citation: Had Claude Sonnet 4 update the code for the TrainerBadges post request
 // Prompt: Create post request for TrainerBadges based on the frontend and dml provided
 // This will insert a new trainer badge record
@@ -296,41 +333,17 @@ app.post('/trainerbadges', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-app.put('/trainerbadges/:trainerBadgeID', async(req,res) => {
-    const {trainerBadgeID} = req.params;
-    const {trainerID, badgeID, dateEarned} = req.body;
-
-    if (!trainerID || !badgeID || !dateEarned) {
-        return res.status(400).json({ error: 'Trainer ID, badgeID, dateEarned are required' });
-    } 
+//Citation: Had chatgpt4 generate get function for TrainerBadges
+//Prompt: Create get request for Trainerbadges based on DML and frontend page provided
+// Call GetAllTrainerBadges stored procedure to retrieve trainer badges
+app.get('/trainerbadges', async (req, res) => {
     try {
-        await db.execute('CALL UpdateTrainerBadges(?,?, ?, ?)', [trainerBadgeID, trainerID, trainerName, homeTown]);
-        res.status(200).json({ message: 'Trainer Badge updated successfully' });
+        // Use the stored procedure instead of raw SQL
+        const [trainerBadges] = await db.query('CALL GetAllTrainerBadges()');
+        res.status(200).json({ trainerBadges: trainerBadges[0] });
     } catch (error) {
-        console.error('Error updating trainer Badge:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Citation: Had Claude Sonnet generate code for deleting a trainer badge
-// Prompt: Generate Delete request for TrainBadges based on the frontend and dml provided
-// Delete only the badge record, not the trainer
-app.delete('/trainerbadges/:trainerBadgeID', async (req, res) => {
-    const { trainerBadgeID } = req.params;
-
-    if (!trainerBadgeID) {
-        return res.status(400).json({ error: "trainerBadgeID parameter is required" });
-    }
-
-    try {
-        // Direct SQL delete (or use your stored procedure)
-        await db.execute('DELETE FROM TrainerBadges WHERE trainerBadgeID = ?', [trainerBadgeID]);
-        
-        res.status(200).json({ message: `Trainer badge with ID ${trainerBadgeID} deleted successfully.` });
-    } catch (error) {
-        console.error("Error deleting trainer badge:", error);
-        res.status(500).json({ error: "An error occurred while deleting the trainer badge." });
+        console.error("Error executing TrainerBadges query:", error);
+        res.status(500).json({ error: "An error occurred while retrieving TrainerBadges." });
     }
 });
 

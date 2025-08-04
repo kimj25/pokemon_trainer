@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 
 
 function TrainerBadges({ backendURL }) {
@@ -12,6 +12,8 @@ function TrainerBadges({ backendURL }) {
     });
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [editData, setEditData] = useState({});
 
   // Formatter helper function to format date as MM/DD/YYYY
     const formatDate = (isoDate) => {
@@ -107,7 +109,58 @@ function TrainerBadges({ backendURL }) {
             setSubmitting(false);
           }
         };
+    //Citation: Used Claude Sonnet 4 to help write inline editing function
+    //Prompt: Write Edit function for Trainers.JSX that allows inline editing for trainers
+    // Wants to also incorporate existing delete function. 
+    const startEdit = (trainerBadge) => {
+        setEditingId(trainerBadge.trainerBadgeID);
+        setEditData({
+            trainerID: trainerBadge.trainerID,
+            badgeID: trainerBadge.badgeID,
+            dateEarned: trainerBadge.dateEarned.split('T')[0]
+        });
+    };
 
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditData({});
+    };
+
+    const handleEditChange = (e) => {
+        setEditData({
+            ...editData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const saveEdit = async (trainerBadgeID) => {
+        try {
+            console.log('🚀 Frontend: About to save edit');
+            console.log('🚀 trainerBadgeID:', trainerBadgeID);
+            console.log('🚀 editData:', editData);
+            console.log('🚀 Full URL:', `${backendURL}/trainerbadges/${trainerBadgeID}`);
+            const response = await fetch(`${backendURL}/trainerbadges/${trainerBadgeID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editData)
+            });
+
+            if (response.ok) {
+                alert('Trainer badge updated successfully!');
+                setEditingId(null);
+                setEditData({});
+                getTrainerBadgesData();
+            } else {
+                const errorData = await response.json();
+                alert(`Failed to update trainer badge: ${errorData.error || 'Unknown error'}`);
+            }
+        } catch (error) {
+            console.error('Error updating trainer badge:', error);
+            alert('Error updating trainer badge. Please try again.');
+        }
+    };
     const handleDelete = async (trainerBadgeID) => {
     if (window.confirm('Delete this trainer badge record?')) {
         try {
@@ -132,40 +185,103 @@ function TrainerBadges({ backendURL }) {
         getData();
     }, [backendURL]);
   
-  return (
+    return (
+        <div>
+            <h1>Trainer Badges Information</h1>
+            <p>Shows Trainer's Current Badge Status</p>
+            
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Trainer Badge ID</th>
+                        <th>Trainer Name</th>
+                        <th>Badge Name</th>
+                        <th>Date Earned</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-    <div>
-      <h1>Trainer Badges Information</h1>
-      <p> Shows Trainer's Current Badge Status </p>
-      
-    <table border="1">
-    <thead>
-      <tr>
-        <th>Trainer Badge ID</th>
-        <th>Trainer Name</th>
-        <th>Badge Name</th>
-        <th>Date Earned</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {trainerBadges.map((trainerBadge, idx) => (
-        <tr key={trainerBadge.trainerBadgeID || idx}>
-          <td>{trainerBadge.trainerBadgeID}</td>
-          <td>{trainerBadge.trainerName}</td>
-          <td>{trainerBadge.badgeName}</td>
-          <td>{formatDate(trainerBadge.dateEarned)}</td>
-          <td>
-            <button onClick={() => handleEdit(trainerBadge.trainerBadgeID)}>Edit</button>
-            <button onClick={() => handleDelete(trainerBadge.trainerBadgeID)}>Delete</button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-    </table>
-      
-      <br/>
+                <tbody>
+                    {trainerBadges.map((trainerBadge) => (
+                        <tr key={trainerBadge.trainerBadgeID}>
+                            <td>{trainerBadge.trainerBadgeID}</td>
+                            
+                            <td>
+                                {editingId === trainerBadge.trainerBadgeID ? (
+                                    <select
+                                        name="trainerID"
+                                        value={editData.trainerID}
+                                        onChange={handleEditChange}
+                                    >
+                                        {trainers.map(trainer => (
+                                            <option key={trainer.trainerID} value={trainer.trainerID}>
+                                                {trainer.trainerName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    trainerBadge.trainerName
+                                )}
+                            </td>
+                            
+                            <td>
+                                {editingId === trainerBadge.trainerBadgeID ? (
+                                    <select
+                                        name="badgeID"
+                                        value={editData.badgeID}
+                                        onChange={handleEditChange}
+                                    >
+                                        {badges.map(badge => (
+                                            <option key={badge.badgeID} value={badge.badgeID}>
+                                                {badge.badgeName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    trainerBadge.badgeName
+                                )}
+                            </td>
+                            
+                            <td>
+                                {editingId === trainerBadge.trainerBadgeID ? (
+                                    <input
+                                        type="date"
+                                        name="dateEarned"
+                                        value={editData.dateEarned}
+                                        onChange={handleEditChange}
+                                    />
+                                ) : (
+                                    formatDate(trainerBadge.dateEarned)
+                                )}
+                            </td>
+                            
+                            <td>
+                                {editingId === trainerBadge.trainerBadgeID ? (
+                                    <>
+                                        <button onClick={() => saveEdit(trainerBadge.trainerBadgeID)}>
+                                            Save
+                                        </button>
+                                        <button onClick={cancelEdit}>
+                                            Cancel
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button onClick={() => startEdit(trainerBadge)}>
+                                            Edit
+                                        </button>
+                                        <button onClick={() => handleDelete(trainerBadge.trainerBadgeID)}>
+                                            Delete
+                                        </button>
+                                    </>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            
+            <br/>
       
       <h2>Award Badge to Trainer</h2>
             <form onSubmit={handleSubmit}>
