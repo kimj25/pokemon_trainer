@@ -63,7 +63,7 @@ function Trainers({ backendURL }) {
   };
 //Citation: Used Claude Sonnet 4 to help write inline editing function
 //Prompt: Write Edit function for Trainers.JSX that allows inline editing for trainers
-// Wants to also incorporate existing delete function. 
+//Also incorporate existing delete function. 
   const startEdit = (trainer) => {
     setEditingId(trainer.trainerID);
     setEditData({
@@ -135,6 +135,7 @@ function Trainers({ backendURL }) {
 
 // Citation: Used copilot to improve coding for adding, deleting new trainers
 // Prompt: Help me improve and correctly handle the form for adding, editing, deleting new trainers
+// using inline editing abd deleting for trainers
   return (
     <>
       <h1>Trainers</h1>

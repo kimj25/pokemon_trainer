@@ -1,14 +1,187 @@
-h1, h2 { margin-left: 16px;}
-table {border-collapse: collapse;margin-left: 32px;}
-th, td {
-    border: 1px solid #ddd;
-    padding: 12px;
+/* Citation: Used Claude Sonnet 4 to generate a clean and simple basic CSS for a Pokemon Trainer Database Frontend.
+    * Then manually added, modified, and optimized the styles to fit the requirements.
+    * Prompt: Create a clean and simple CSS for the frontend of a Pokemon Trainer Database.
+
+/* Simple & Clean Pokemon Trainer Database Styles */
+
+:root {
+    --primary: #2673ef;
+    --success: #10b981;
+    --danger: #ef4444;
+    --gray: #6b7280;
+    --light-gray: #f3f4f6;
+    --white: #ffffff;
+  }
+  
+  #root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  
+  /* background */
+  body {
+    background-color: var(--light-gray);
+    color: #333;
+  }
+  
+  /* headings */
+  h1 {
     text-align: center;
-}
-th {background-color: #f2f2f2;}
-tr:nth-child(even) {background-color: #f9f9f9;}
-.cuForm { margin-left: 32px;}
-input, select { margin-bottom: 4px;margin-right: 12px;}
-nav {background-color: #cecece;padding: 16px;}
-a {margin-left: 16px;}
-.homepageDescription {margin-left: 32px;}
+    color: #2c3e50;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: #161a34;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-collapse: collapse;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  
+  th {
+    background: var(--primary);
+    color: var(--white);
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9fafb;
+  }
+  
+  tr:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /*Navigation */
+
+  nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  /* Simple buttons */
+  button {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background-color 0.2s;
+  }
+  
+  /* Button colors */
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  /* Clean forms */
+  form {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 14px;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  footer {
+    position: fixed;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    height: 50px; 
+    background-color: #f4f4f4;
+    color: rgb(40, 42, 78); 
+    text-align: center; 
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  /* Keep your existing logo styles */
+  .logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+  }
+  
+  .logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+  }
+  
+  .logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+  }
+  
+  @keyframes logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+      animation: logo-spin infinite 20s linear;
+    }
+  }
+  
+  .card {
+    padding: 2em;
+  }
+  
+  .read-the-docs {
+    color: #888;
+  }

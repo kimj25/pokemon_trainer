@@ -15,7 +15,7 @@ app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json()); // this is needed for post requests
 
 
-const PORT = 35706;
+const PORT = 35702;
 backendURL = `http://classwork.engr.oregonstate.edu:${PORT}...`;
 
 
@@ -260,8 +260,8 @@ app.delete('/trainers/:trainerID', async (req, res) => {
 });
 
 // Citation: Had Claude Sonnet generate code for deleting a trainer badge
-// Prompt: Generate Delete request for TrainBadges based on the frontend and dml provided
-// Delete only the badge record, not the trainer
+// Prompt: Generate Delete request for TrainBadges based on the frontend provided
+// Use direct SQL for delete and delete only the badge record, not the trainer
 app.delete('/trainerbadges/:trainerBadgeID', async (req, res) => {
     const { trainerBadgeID } = req.params;
     console.log('Deleting trainer badge with ID:', trainerBadgeID);
@@ -270,7 +270,7 @@ app.delete('/trainerbadges/:trainerBadgeID', async (req, res) => {
     }
 
     try {
-        // Direct SQL delete (or use your stored procedure)
+        // Direct SQL delete
         await db.execute('DELETE FROM TrainerBadges WHERE trainerBadgeID = ?', [trainerBadgeID]);
         
         res.status(200).json({ message: `Trainer badge with ID ${trainerBadgeID} deleted successfully.` });
@@ -280,6 +280,9 @@ app.delete('/trainerbadges/:trainerBadgeID', async (req, res) => {
     }
 });
 
+// Citation: Had Claude Sonnet 4 generate put route for TrainerBadges
+// Prompt: Create put request for TrainerBadges based on the frontend and UpdateTrainerBadges DML provided
+// Also, handle the error for duplicate entries for badges
 app.put('/trainerbadges/:trainerBadgeID', async(req, res) => {
     const {trainerBadgeID} = req.params;
     const {trainerID, badgeID, dateEarned} = req.body;
@@ -289,23 +292,23 @@ app.put('/trainerbadges/:trainerBadgeID', async(req, res) => {
     } 
     
     try {
-        console.log('Updating trainer badge with data:', { trainerID, badgeID, dateEarned, trainerBadgeID });
-        // Use direct SQL instead of stored procedure
-        const [result] = await db.execute(
-            'UPDATE TrainerBadges SET trainerID = ?, badgeID = ?, dateEarned = ? WHERE trainerBadgeID = ?',
-            [trainerID, badgeID, dateEarned, trainerBadgeID]
-        );
-        
-        console.log('Update result:', result);
-        
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Trainer badge not found' });
-        }
+        await db.execute('CALL UpdateTrainerBadges(?, ?, ?, ?)', [
+            trainerBadgeID, 
+            trainerID, 
+            badgeID, 
+            dateEarned
+        ]);
         
         res.status(200).json({ message: 'Trainer Badge updated successfully' });
     } catch (error) {
         console.error('Error updating trainer Badge:', error);
-        res.status(500).json({ error: 'Internal server error yooo', details: error.message });
+        
+        // Handle specific database errors
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: 'This trainer already has this badge!' });
+        }
+        
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
