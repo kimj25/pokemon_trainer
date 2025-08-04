@@ -212,25 +212,6 @@ app.get('/pokemon/:id', async (req, res) => {
     }
 });
 
-app.get('/trainers/:trainerID', async (req, res) => {
-    const {trainerID} = req.params;
-
-    try {
-        const [rows] = await db.query(
-            'CALL GetTrainerById(?)', [trainerID]
-        );
-
-        if (rows[0].length === 0) {
-            return res.status(404).json({ message: 'Trainer not found' });
-        }       
-        
-        res.status(200).json(rows[0][0]); // Return the first row of the first result set
-    } catch (error) {
-        console.error('Error fetching trainer:', error);
-        res.status(500).json({ message: 'Database Error' });
-    }
-});
-
 app.get('/trainers', async (req, res) => {
     try {
         // Call stored procedure to get Types data

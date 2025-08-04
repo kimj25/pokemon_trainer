@@ -1,8 +1,4 @@
 import { useState, useEffect } from 'react';
-import GenericTableRow from '../components/GenericTableRow';
-import TableRowWithDelete from '../components/TableRowWithDelete';
-import DeleteTrainerForm from '../components/DeleteTrainerForm';
-
 
 function Trainers({ backendURL }) {
   const [trainers, setTrainers] = useState([]);
@@ -11,13 +7,11 @@ function Trainers({ backendURL }) {
       homeTown: ''
   });
   const [submitting, setSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);  
-  const [editing, setEditing] = useState(null);
-  const [editFormData, setEditFormData] = useState({
-    trainerName: '',
-    homeTown: ''
-  });
-
+  const [loading, setLoading] = useState(true);
+  
+  // State for inline editing
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
 
   const getData = async () => {
     try {
@@ -31,14 +25,14 @@ function Trainers({ backendURL }) {
         setLoading(false);
     }
   };
-// Citation: Used copilot to add form handling for adding new trainers
-// Prompt: Create handlers for form input and submission based on the get, post, and frontend code provided
+
   const handleInputChange = (e) => {
     setFormData({
         ...formData,
         [e.target.name]: e.target.value
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -67,25 +61,54 @@ function Trainers({ backendURL }) {
         setSubmitting(false);
     }
   };
+//Citation: Used Claude Sonnet 4 to help write inline editing function
+//Prompt: Write Edit function for Trainers.JSX that allows inline editing for trainers
+// Wants to also incorporate existing delete function. 
+  const startEdit = (trainer) => {
+    setEditingId(trainer.trainerID);
+    setEditData({
+      trainerName: trainer.trainerName,
+      homeTown: trainer.homeTown
+    });
+  };
 
-  /// Citation: Used copilot to add edit and delete functionality
-  // Prompt: Help me finish the code for handling edit and delete
-  // based on the provided DML, frontend and backend code
-  const handleEdit = async (trainerID) => {
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditData({});
+  };
+
+  const handleEditChange = (e) => {
+    setEditData({
+      ...editData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const saveEdit = async (trainerID) => {
     try {
-        const response = await fetch(`${backendURL}/trainers/${trainerID}`);
-        const data = await response.json();
-        setEditFormData({
-            trainerName: data.trainerName,
-            homeTown: data.homeTown
-        });
-        setEditing(trainerID);
+      const response = await fetch(`${backendURL}/trainers/${trainerID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editData)
+      });
+
+      if (response.ok) {
+        alert('Trainer updated successfully!');
+        setEditingId(null);
+        setEditData({});
+        getData(); // Refresh the data
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to update trainer: ${errorData.error || 'Unknown error'}`);
+      }
     } catch (error) {
-        console.error('Error fetching trainer for edit:', error);
-        alert('Error loading trainer data for editing');
+      console.error('Error updating trainer:', error);
+      alert('Error updating trainer. Please try again.');
     }
-  };  
-        
+  };
+
   const handleDelete = async (trainerID) => {
     if (window.confirm('Delete this trainer record?')) {
         try {
@@ -95,7 +118,7 @@ function Trainers({ backendURL }) {
 
             if (response.ok) {
                 alert('Trainer record deleted successfully!');
-                getData(); // Refresh the data
+                getData();
             } else {
                 alert('Failed to delete trainer record');
             }
@@ -104,15 +127,14 @@ function Trainers({ backendURL }) {
             alert('Error deleting trainer record');
         }
     }
-        };
+  };
 
-  
-  useEffect(() => {getData();}, [backendURL]);
+  useEffect(() => { getData(); }, [backendURL]);
 
   if (loading) return <p>Loading trainers...</p>;
 
-  // Citation: Used copilot to improve coding for adding, deletingnew trainers
-  // Prompt: Help me improve and correctly handle the form for adding, deleting new trainers
+// Citation: Used copilot to improve coding for adding, deleting new trainers
+// Prompt: Help me improve and correctly handle the form for adding, editing, deleting new trainers
   return (
     <>
       <h1>Trainers</h1>
@@ -120,22 +142,64 @@ function Trainers({ backendURL }) {
       <table>
         <thead>
           <tr>
-            {Object.keys(trainers[0] || {}).map((header, idx) => (
-              <th key={idx}>{header}</th>
-            ))}
+            <th>Trainer ID</th>
+            <th>Trainer Name</th>
+            <th>Home Town</th>
             <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          {trainers.map((trainer, idx) => (
-            <tr key={trainer.trainerID || idx}>
+          {trainers.map((trainer) => (
+            <tr key={trainer.trainerID}>
               <td>{trainer.trainerID}</td>
-              <td>{trainer.trainerName}</td>
-              <td>{trainer.homeTown}</td>
+              
               <td>
-                <button onClick={() => handleEdit(trainer.trainerID)}>Edit</button>
-                <button onClick={() => handleDelete(trainer.trainerID)}>Delete</button>
+                {editingId === trainer.trainerID ? (
+                  <input
+                    type="text"
+                    name="trainerName"
+                    value={editData.trainerName}
+                    onChange={handleEditChange}
+                  />
+                ) : (
+                  trainer.trainerName
+                )}
+              </td>
+              
+              <td>
+                {editingId === trainer.trainerID ? (
+                  <input
+                    type="text"
+                    name="homeTown"
+                    value={editData.homeTown}
+                    onChange={handleEditChange}
+                  />
+                ) : (
+                  trainer.homeTown
+                )}
+              </td>
+              
+              <td>
+                {editingId === trainer.trainerID ? (
+                  <>
+                    <button onClick={() => saveEdit(trainer.trainerID)}>
+                      Save
+                    </button>
+                    <button onClick={cancelEdit}>
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => startEdit(trainer)}>
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(trainer.trainerID)}>
+                      Delete
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
