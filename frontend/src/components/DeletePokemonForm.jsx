@@ -23,7 +23,7 @@ const DeletePokemonForm = ({ rowObject, backendURL, refreshData }) => {
     };
 
     return (
-        <button onClick={handleDelete}>Delete</button>  // Just return a button
+        <button onClick={handleDelete}>Delete</button> 
     );
 };
 
