@@ -54,6 +54,7 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     border-collapse: collapse;
+    border-spacing: 0;
     overflow: hidden;
     margin-bottom: 2rem;
   }
@@ -62,17 +63,21 @@
     background: var(--primary);
     color: var(--white);
     padding: 12px;
-    text-align: left;
+    text-align: center;
     font-weight: 600;
   }
   
   td {
     padding: 12px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #f3f4f6;
+    border-left: none;
+    border-right: none;
+    text-align: center;
   }
   
   tr:nth-child(even) {
     background-color: #f9fafb;
+    text-align: center;
   }
   
   tr:hover {
