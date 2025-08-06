@@ -217,7 +217,7 @@ app.post('/trainers', async(req, res) => {
         return res.status(400).json({ error: 'Trainer Name, and Home Town are required' });
     }
     try {
-        await db.execute('CALL InsertTrainer(?,?)', [trainerName, homeTown]);
+        await db.execute('CALL InsertTrainers(?,?)', [trainerName, homeTown]);
         res.status(201).json({ message: 'Trainer added successfully' });
     } catch (error) {
         console.error('Error adding trainer:', error);
