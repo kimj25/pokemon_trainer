@@ -149,4 +149,6 @@ END //
 
 DELIMITER ;
 
--- Citation: Used Claude Sonnet 4 to generate PL.sql
+-- Citation: Used Claude Sonnet 4 to generate PL/SQL
+-- Prompt: extract essential stored procedures from existing DML.sql into organized PL.sql file
+-- Selected trainer procedures and ResetDatabase to demonstrate core PL/SQL concepts without redundancy
