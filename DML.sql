@@ -368,7 +368,11 @@ Begin
     Insert Into TrainerBadges (badgeID, trainerID, dateEarned) 
     Values
         (1, 1, '2025-04-10'),  -- Ash has Boulder Badge
-        (2, 2, '2024-03-15');  -- Misty has Cascade Badge
+        (2, 2, '2024-03-15'),  -- Misty has Cascade Badge
+        (1, 2, '2025-04-10'),  -- Ash has Cascade Badge
+        (2, 1, '2024-03-15'),  -- Misty has Boulder Badge
+        (3, 1, '2025-05-20'),  -- Ash has Thunder Badge
+        (4, 2, '2025-06-01');  -- Misty has Rainbow Badge
 
 
     SET FOREIGN_KEY_CHECKS=1;
