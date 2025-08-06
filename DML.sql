@@ -10,6 +10,7 @@ Drop Procedure If Exists DeletePokemonById //
 Drop Procedure If Exists InsertPokemon //
 Drop Procedure If Exists UpdatePokemon //
 Drop Procedure If Exists GetAllTrainers //
+Drop Procedure If Exists GetTrainerById //
 Drop Procedure If Exists InsertTrainers //
 Drop procedure If Exists DeleteTrainerById //
 Drop Procedure If Exists GetAllTrainerBadges //
@@ -178,6 +179,19 @@ BEGIN
     JOIN Badges ON TrainerBadges.badgeID = Badges.badgeID
     ORDER BY Trainers.trainerID, TrainerBadges.dateEarned;
 END //
+
+CREATE PROCEDURE GetTrainerById(
+    IN in_trainerID INT
+)
+BEGIN
+    SELECT
+        trainerID,
+        trainerName,
+        homeTown
+    FROM Trainers
+    WHERE trainerID = in_trainerID;
+END //
+
 
 -- Citation: Had Claude Sonnet 4 generate this code for inserting a new TrainerBadge
 -- Prompt: Create InsertTrainerBadge based on the provided frontend and post request
