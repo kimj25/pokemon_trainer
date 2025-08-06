@@ -305,7 +305,8 @@ Begin
     Insert Into Trainers (trainerName, homeTown) 
     Values 
         ('Ash', 'Pallet Town'),
-        ('Misty', 'Cerulean City');
+        ('Misty', 'Cerulean City'),
+        ('Brock', 'Pewter City');
 
     -- test data of pokemons
     Insert Into Pokemons (pokemonSpeciesID, level, trainerID, dateCaught) 
