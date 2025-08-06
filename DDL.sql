@@ -71,7 +71,8 @@ CREATE TABLE TrainerBadges(
 Insert Into Trainers (trainerName, homeTown) 
 Values 
     ('Ash', 'Pallet Town'),
-    ('Misty', 'Cerulean City');
+    ('Misty', 'Cerulean City'),
+    ('Brock', 'Pewter City');
 
 -- test data of pokemons
 Insert Into Pokemons (pokemonSpeciesID, level, trainerID, dateCaught) 
@@ -135,8 +136,7 @@ Insert Into TrainerBadges (badgeID, trainerID, dateEarned)
 Values
     (1, 1, '2025-04-10'),  -- Ash has Boulder Badge
     (2, 2, '2024-03-15'),  -- Misty has Cascade Badge
-    (1, 2, '2025-04-10'),  -- Ash has Cascade Badge
-    (2, 1, '2024-03-15'),  -- Misty has Boulder Badge
+    (2, 1, '2025-04-10'),  -- Ash has Cascade Badge
     (3, 1, '2025-05-20'),  -- Ash has Thunder Badge
     (4, 2, '2025-06-01');  -- Misty has Rainbow Badge
 
