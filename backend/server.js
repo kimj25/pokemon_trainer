@@ -175,11 +175,12 @@ app.get('/pokemon/:id', async (req, res) => {
 
     try {
         const [rows] = await db.query('CALL GetPokemonByID(?)', [id]);
-        if (rows.length === 0) {
+        // rows[0] = array of objects from the SELECT
+        if (!rows[0] || rows[0].length === 0) {
             return res.status(404).json({ message: 'Pokemon not found' });
         }
+        res.status(200).json(rows[0][0]); // send first row object
 
-        res.status(200).json(rows[0]);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Database error' });

@@ -6,17 +6,22 @@ import React, { useState } from 'react';
 // It was great help for the formatting the date and ensuring the level is within the range of 1-100.
 // The form should validate the inputs and provide feedback if any required fields are missing or invalid.
 const CreatePokemonForm = ({ backendURL, refreshData }) => {
+    // State variables for form inputs
     const [speciesName, setSpeciesName] = useState('');
     const [nickname, setNickname] = useState('');
     const [level, setLevel] = useState(1);
     const [trainerID, setTrainerID] = useState('');
     const [dateCaught, setDateCaught] = useState('');
 
+    // Function to validate level input
+    // Ensures level is between 1 and 100
     const isLevelValid = (level) => {
         const num = Number(level);
         return num >= 1 && num <= 100;
     };
 
+    // Function to handle form submission
+    // Validates inputs and sends a POST request to create a new Pokémon
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -57,6 +62,7 @@ const CreatePokemonForm = ({ backendURL, refreshData }) => {
         }
     };
 
+    // Renders the form for creating a new Pokemon
     return (
         <>
             <h2>Add a new Pokémon</h2>
