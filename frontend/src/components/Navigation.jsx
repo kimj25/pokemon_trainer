@@ -21,6 +21,8 @@ function Navigation({ backendURL }) {
         }
     };
 
+    // Navigation component renders links to different pages and reset button has an onClick handler
+    // The links are styled with flexbox for better layout
     return (
         <nav style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             Navigation:

@@ -21,7 +21,7 @@ const DeletePokemonForm = ({ rowObject, backendURL, refreshData }) => {
             alert('Failed to delete Pokemon');
         }
     };
-
+    // Render a button to delete the Pokemon with onClick handler to trigger the delete operation
     return (
         <button onClick={handleDelete}>Delete</button> 
     );

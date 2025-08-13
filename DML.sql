@@ -1,3 +1,12 @@
+-- CS340 Project: Group 16
+-- Names: Julie Kim and Francis Truong
+-- Citations
+-- GEN AI with Claude Sonnet 4 and Gemini AI were used to generate some stored Procedures and test data
+-- Via prompts that give the structure of the tables and the desired functionality with manual adjustments
+-- Other procedures were written by Julie Kim and Francis Truong with drops and previous table structure
+-- Pokémon Red and Blue. Developed by Game Freak, published by Nintendo, 1996.
+-- Table structure was designed by Julie Kim and Francis Truong
+
 Delimiter //
 
 -- Drops all procedures if they exist
@@ -38,6 +47,22 @@ Begin
     Left Join Types As T1 On PokemonSpecies.primaryTypeID = T1.typeID
     Left Join Types As T2 On PokemonSpecies.secondaryTypeID = T2.typeID
     Left Join Trainers On Pokemons.trainerID = Trainers.trainerID;
+End //
+
+-- Procedure to get pokemon by pokemon ID
+Create Procedure GetPokemonByID(In p_id Int)
+Begin
+    Select 
+        Pokemons.pokemonID,
+        PokemonSpecies.speciesName,
+        Pokemons.nickname,
+        Pokemons.level,
+        Pokemons.trainerID,
+        Pokemons.dateCaught
+    From Pokemons
+    Join PokemonSpecies 
+        On Pokemons.pokemonSpeciesID = PokemonSpecies.pokemonSpeciesID
+    Where Pokemons.pokemonID = p_id;
 End //
 
 -- Procedure to get all types for the type page

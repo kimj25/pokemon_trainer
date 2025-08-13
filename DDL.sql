@@ -1,5 +1,13 @@
 -- CS340 Project: Group 16
 -- Names: Julie Kim and Francis Truong
+-- Citations
+-- GEN AI with Claude Sonnet 4 was used to generate data to insert into Pokemon Speices and used 
+-- for brain storming test data
+-- Pokémon Red and Blue. Developed by Game Freak, published by Nintendo, 1996.
+-- Serebii. (n.d.). “Generation 1 Pokémon.” Serebii.net. https://www.serebii.net/pokemon/gen1pokemon.shtml. Accessed 1 July 2025.
+-- “Pokémon League.” Pokémon Wiki, Fandom, https://pokemon.fandom.com/wiki/Kanto#Pok%C3%A9mon_League. Accessed 1 July 2025.
+-- Table structure was designed by Julie Kim and Francis Truong
+
 SET FOREIGN_KEY_CHECKS=0;
 SET AUTOCOMMIT = 0;
 
@@ -144,9 +152,3 @@ Values
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
--- Citations
--- GEN AI with Claude Sonnet 4 was used to generate data to insert into Pokemon Speices and used 
--- for brain storming test data
--- Pokémon Red and Blue. Developed by Game Freak, published by Nintendo, 1996.
--- Serebii. (n.d.). “Generation 1 Pokémon.” Serebii.net. https://www.serebii.net/pokemon/gen1pokemon.shtml. Accessed 1 July 2025.
--- “Pokémon League.” Pokémon Wiki, Fandom, https://pokemon.fandom.com/wiki/Kanto#Pok%C3%A9mon_League. Accessed 1 July 2025.

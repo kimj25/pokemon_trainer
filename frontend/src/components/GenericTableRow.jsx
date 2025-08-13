@@ -1,3 +1,4 @@
+// GenericTableRow as resuable component to map over rowObjects from the db
 const GenericTableRow = ({ rowObject }) => {
   return (
     <tr>

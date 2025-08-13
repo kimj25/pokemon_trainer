@@ -5,15 +5,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 // The prompt: Given CreatePokemonForm.jsx, create a form that allows users to update an existing Pokémon.
 // Then I simply made edits to the form to make it work with the backend and frontend
 const EditPokemonForm = ({ backendURL }) => {
+    // Get the pokemonID from the URL parameters
     const { id: pokemonID } = useParams();
     const navigate = useNavigate();
-
+    // State variables for form inputs
     const [speciesName, setSpeciesName] = useState('');
     const [nickname, setNickname] = useState('');
     const [level, setLevel] = useState(1);
     const [trainerID, setTrainerID] = useState('');
     const [dateCaught, setDateCaught] = useState('');
 
+    // Fetches the existing Pokemon data when the component mounts 
     useEffect(() => {
         const fetchPokemon = async () => {
             try {
@@ -35,11 +37,13 @@ const EditPokemonForm = ({ backendURL }) => {
         fetchPokemon();
     }, [backendURL, pokemonID]);
 
+    // Function to validate level input
     const isLevelValid = (level) => {
         const num = Number(level);
         return num >= 1 && num <= 100;
     };
 
+    // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -73,6 +77,10 @@ const EditPokemonForm = ({ backendURL }) => {
             alert('Failed to update Pokémon');
         }
     };
+
+    // Render the form for updating an existing Pokemon
+    // The form includes fields for species name, nickname, level, trainer ID, and date caught
+    // Each field has an onChange handler to update the state variables
 
     return (
         <>

@@ -14,7 +14,7 @@ const cors = require('cors');
 app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json()); // this is needed for post requests
 
-
+// Port and URL used
 const PORT = 35729;
 backendURL = `http://classwork.engr.oregonstate.edu:${PORT}...`;
 
@@ -23,6 +23,7 @@ backendURL = `http://classwork.engr.oregonstate.edu:${PORT}...`;
 // ########## ROUTE HANDLERS
 
 // READ ROUTES
+// get route to get all pokemon
 app.get('/pokemon', async (req, res) => {
     try {
         // Call stored procedure to get Pokémon data
@@ -33,11 +34,10 @@ app.get('/pokemon', async (req, res) => {
         res.status(500).send("An error occurred while retrieving Pokémon.");
     }
 });
-
+// get route to get all types
 app.get('/types', async (req, res) => {
     try {
         // Call stored procedure to get Types data
-        
         const [types] = await db.query('CALL GetAllTypes()');
         res.status(200).json({ types: types[0] });
     } catch (error) {
@@ -46,6 +46,8 @@ app.get('/types', async (req, res) => {
     }
 });
 
+// get route to get species throguh pagination which you can change limits but currently set to 10
+// Citation: Gemini AI was used to to help with pagination implmentation for frontend, backend, and stored procedure
 app.get('/species', async (req, res) => {
     try {
         const { type = null, page = 1, limit = 10 } = req.query;
@@ -62,7 +64,7 @@ app.get('/species', async (req, res) => {
     }
 });
 
-
+// get route to get all the badges by badgeID via selection
 app.get('/badges', async (req, res) => {
     try {
         const [badges] = await db.query('SELECT * FROM Badges ORDER BY badgeID');
@@ -73,7 +75,7 @@ app.get('/badges', async (req, res) => {
     }
 });
 
-
+// delete route to delete pokemon based on ID which is given via row through params
 app.delete('/pokemons/:pokemonID', async (req, res) => {
     const { pokemonID } = req.params;
 
@@ -172,22 +174,7 @@ app.get('/pokemon/:id', async (req, res) => {
     const id = req.params.id;
 
     try {
-        const [rows] = await db.query(
-            `
-            Select 
-                Pokemons.pokemonID,
-                PokemonSpecies.speciesName,
-                Pokemons.nickname,
-                Pokemons.level,
-                Pokemons.trainerID,
-                Pokemons.dateCaught
-            From Pokemons
-            Join PokemonSpecies On Pokemons.pokemonSpeciesID = PokemonSpecies.pokemonSpeciesID
-            Where Pokemons.pokemonID = ?;
-            `,
-            [id]
-        );
-
+        const [rows] = await db.query('CALL GetPokemonByID(?)', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Pokemon not found' });
         }
@@ -199,6 +186,7 @@ app.get('/pokemon/:id', async (req, res) => {
     }
 });
 
+// Get route to get all trainers
 app.get('/trainers', async (req, res) => {
     try {
         // Call stored procedure to get Types data
@@ -210,6 +198,7 @@ app.get('/trainers', async (req, res) => {
     }
 });
 
+// Post route to create a new trainer to insert into the db
 app.post('/trainers', async(req, res) => {
     const {trainerName, homeTown } = req.body;
 
@@ -225,6 +214,7 @@ app.post('/trainers', async(req, res) => {
     }
 });
 
+// edit route trainer based on ID and params provided, used old params as default values
 app.put('/trainers/:trainerID', async(req, res) => {
     const {trainerID} = req.params;
     const {trainerName, homeTown } = req.body;
@@ -241,6 +231,7 @@ app.put('/trainers/:trainerID', async(req, res) => {
     }
 });
 
+// Delete route for trainers based on ID provided on the row
 app.delete('/trainers/:trainerID', async (req, res) => {
     const { trainerID } = req.params;
 
